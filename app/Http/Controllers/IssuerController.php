@@ -341,20 +341,16 @@ class IssuerController extends Controller {
     public function property(Request $request)
     {
         $user         = Auth::user();
-        $propertylist = Property::with('userContract')->where('user_id', $user->id)->where('status','active')->orderBy('created_at', 'desc')->get();
+        $propertylist = Property::with('userContract', 'blockchain')->where('user_id', $user->id)->where('status','active')->orderBy('created_at', 'desc')->get();
 
 
         foreach ($propertylist as $property) {
-            if (!empty($property->userContract)) {
-                $property->contract_address = $property['userContract']->contract_address;
-                $property->coin = $property['userContract']->coin;
+            if (!empty($property->userContract) && !empty($property->blockchain)) {
+                $property->contract_address = $property->userContract->contract_address;
+                $property->coin = $property->blockchain->blockchain_name;
+                $url = $property->blockchain->link;
+                $property->contract_link = $url .'token/'. $property->contract_address;
             }
-
-            $property->contract_address = $property->userContract->contract_address;
-            $property->coin = $property->blockchain->blockchain_nam;
-            $url = $property->blockchain->link;
-            $property->contract_link = $url .'token/'. $property->contract_address;
-
         }
 
         $propertylist = (new CommonController)->calculatePercentage($propertylist);
@@ -372,9 +368,9 @@ class IssuerController extends Controller {
             }
 
 
-            if(!empty($property['userContract']) && !empty($property['blockchain'])){
+            if(!empty($property->userContract) && !empty($property->blockchain)){
                 $property->contract_address = $property->userContract->contract_address;
-                $property->coin = $property->blockchain->blockchain_nam;
+                $property->coin = $property->blockchain->blockchain_name;
                 $url = $property->blockchain->link;
                 $property->contract_link = $url .'token/'. $property->contract_address;
             }
@@ -778,7 +774,18 @@ class IssuerController extends Controller {
 
             if(config('app.is_demo')){
                 $tokenizerService = new TokenizerService();
-                $tokenizerService->deployToken($token->id);
+                $deployResult = $tokenizerService->deployToken($token->id);
+
+                if (!empty($deployResult['hasError'])) {
+                    $message = $deployResult['message'] ?? 'Token deployment failed.';
+                    if (request()->ajax()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => $message,
+                        ], 422);
+                    }
+                    return back()->with('flash_error', $message);
+                }
 
                 $this->storeDefaultPayments($token);
 
@@ -803,10 +810,10 @@ class IssuerController extends Controller {
                 }
 
                 return response()->json([
-                    'success' => true,
-                    'message' => 'Token created successfully',
-                    'redirect_url' => url('/issuer/property')
-                ]);
+                    'success' => false,
+                    'message' => 'Token deployment completed but contract details were not found.',
+                    'redirect_url' => url('/issuer/tokenRequest')
+                ], 422);
             }
 
             // For non-demo mode, return JSON response for AJAX requests
@@ -837,12 +844,21 @@ class IssuerController extends Controller {
 
     public function storeDefaultPayments($token){
         $userContract = UserContract::where('property_id', $token->property_id)->where('blockchain_id', $token->blockchain_id)->first();
-        $issuerStablecoinWalletAddress = new IssuerStablecoinWalletAddress();
-        $issuerStablecoinWalletAddress->issuer_id = Auth::user()->id;
-        $issuerStablecoinWalletAddress->blockchain_stablecoin_id = BlockchainStablecoin::where('blockchain_id', $token->blockchain_id)
+        if (!$userContract) {
+            throw new \RuntimeException('User contract not found after token deployment.');
+        }
+
+        $blockchainStablecoin = BlockchainStablecoin::where('blockchain_id', $token->blockchain_id)
             ->whereHas('stablecoin', function($query) use ($token) {
                 $query->where('title', config('token.token.name'));
-            })->first()->id;
+            })->first();
+        if (!$blockchainStablecoin) {
+            throw new \RuntimeException('Default blockchain stablecoin configuration not found.');
+        }
+
+        $issuerStablecoinWalletAddress = new IssuerStablecoinWalletAddress();
+        $issuerStablecoinWalletAddress->issuer_id = Auth::user()->id;
+        $issuerStablecoinWalletAddress->blockchain_stablecoin_id = $blockchainStablecoin->id;
         $issuerStablecoinWalletAddress->user_contract_id = $userContract->id;
         $issuerStablecoinWalletAddress->address = config('token.token.address');
         $issuerStablecoinWalletAddress->save();

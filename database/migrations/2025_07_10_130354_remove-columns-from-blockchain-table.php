@@ -13,7 +13,7 @@ class RemoveColumnsFromBlockchainTable extends Migration
      */
     public function up()
     {
-        DB::table('blockchains')->truncate();
+        DB::table('blockchains')->delete();
         Schema::table('blockchains', function (Blueprint $table) {
             // Remove the test_link and production_link columns if they exist
             if (Schema::hasColumn('blockchains', 'test_link')) {

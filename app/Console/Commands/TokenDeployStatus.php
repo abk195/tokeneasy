@@ -4,10 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\IssuerTokenRequest;
-use App\User;
-use App\UserContract;
-use Setting;
-use GuzzleHttp\Client;
+use App\Services\TokenizerService;
 
 class TokenDeployStatus extends Command
 {
@@ -44,78 +41,25 @@ class TokenDeployStatus extends Command
     {
         try {
             $tokensTodeploy = IssuerTokenRequest::where('token_deploy_status', 0)->get();
-            if (isset($tokensTodeploy)) {
-                foreach ($tokensTodeploy as $tokendeploy) {
-                    $token_name = $tokendeploy->name;
-                    $token_symbol = $tokendeploy->symbol;
-                    $token_value = $tokendeploy->usdvalue;
-                    $token_supply = $tokendeploy->supply;
-                    $token_decimal = $tokendeploy->decimal;
-                    $security_type = $tokendeploy->security_type;
-                    $user_id = $tokendeploy->user_id;
+            $tokenizerService = new TokenizerService();
 
-                    $user = User::findOrFail($user_id);
-                    $email = $user->email;
+            foreach ($tokensTodeploy as $tokendeploy) {
+                $result = $tokenizerService->deployToken($tokendeploy->id);
 
-                    $address = $user->eth_address;
-
-                    $contractABI = Setting::get('contract_abi');
-                    $byteCode = Setting::get('byte_code');
-
-                    $client = new Client;
-                    $headers = [
-                        'Content-Type' => 'application/json',
-                    ];
-                    $url = env('BASE_NODE_URL') . "/getKey";
-                    $res = $client->post($url, [
-                        'headers' => $headers,
-                        'body' => json_encode(['address' => $user->eth_address, 'string' => $user->email]),
+                if (!empty($result['hasError'])) {
+                    \Log::warning('Token deploy cron failed', [
+                        'issuer_token_id' => $tokendeploy->id,
+                        'message' => $result['message'] ?? null,
                     ]);
-                    $res = json_decode($res->getBody(), true);
-                    if ($res['status'] == true)
-                        $eth_pvt_key = $res['key'];
-                    else
-                        return back()->with('flash_error', 'Something went wrong');
-                    $client = new Client;
-
-                    $headers = [
-                        'Content-Type' => 'application/json',
-                    ];
-
-                    $url = env('ETH_NODE_URL') . "/deploy";
-                    $body = ["senderPrivateKey" => $eth_pvt_key, "senderAddress" => $address, "manager" => $address, "resolver" => $address, "owner" => $address, "name" => $token_name, "symbol" => $token_symbol, "totalSupply" => $token_supply, "decimals" => $token_decimal];
-
-                    $res = $client->post($url, [
-                        'headers' => $headers,
-                        'body' => json_encode($body),
-                    ]);
-                    $details = json_decode($res->getBody(), true);
-                    // \Log::info($details);
-                    if (isset($details['status'])) {
-                        if ($details['status'] == 'success') {
-                            $token = new UserContract;
-                            $token->property_id = $tokendeploy->property_id;
-                            $token->user_id = $user->id;
-                            $token->issued_by = $tokendeploy->user_id;
-                            $token->tokenname = $tokendeploy->name;
-                            $token->tokensymbol = $tokendeploy->symbol;
-                            $token->tokenvalue = $tokendeploy->usdvalue;
-                            $token->tokensupply = $tokendeploy->supply;
-                            $token->contract_address = $details['contract_address'];
-                            $token->decimal = $tokendeploy->decimal;
-                            $token->token_image = $tokendeploy->token_image;
-                            $token->banner_image = $tokendeploy->banner_image;
-                            $token->token_type = $tokendeploy->token_type;
-                            $token->status = 1;
-                            $token->save();
-                            $tokendeploy->token_deploy_status = 1;
-                            $tokendeploy->save();
-                            \Log::info('Token deployed successfully in cron');
-                        }
-                    }
+                    continue;
                 }
+
+                \Log::info('Token deployed successfully in cron', [
+                    'issuer_token_id' => $tokendeploy->id,
+                    'contract_address' => $result['contract_address'] ?? null,
+                ]);
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Log::critical("Issue in token deploy cron tab " . $e);
             \Log::info($e);
         }

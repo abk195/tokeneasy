@@ -31,6 +31,7 @@ class DemoPropertiesSeeder extends Seeder
         $blockchain = BlockchainModel::firstOrCreate(
             ['blockchain_name' => 'Ethereum'],
             [
+                'abbreviation' => 'ETH',
                 'link' => 'https://etherscan.io/',
                 'chain_id' => 1,
             ]
@@ -165,6 +166,8 @@ class DemoPropertiesSeeder extends Seeder
             $userContract = UserContract::create([
                 'user_id' => $user->id,
                 'property_id' => $property->id,
+                'tokenname' => $property->propertyName . ' Token',
+                'tokensymbol' => strtoupper(substr(preg_replace('/[^A-Za-z]/', '', $property->propertyName), 0, 4)),
                 'contract_address' => '0x' . strtoupper(substr(md5($property->id . time()), 0, 40)),
                 'tokensupply' => 1000000,
                 'tokenbalance' => rand(200000, 800000), // Random sold tokens

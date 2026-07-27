@@ -31,6 +31,7 @@ use App\IssuerPresaleDiscounts;
 use App\Property;
 use App\KeystoreModel;
 use App\BlockchainModel as Blockchain;
+use App\Services\TokenizerService;
 
 
 class TokenizerController extends Controller
@@ -413,109 +414,13 @@ class TokenizerController extends Controller
     public function issuertokencontracttest($id)
     {
         try {
-            $issuer_token = IssuerTokenRequest::with('property', 'blockchain')->findOrFail($id);
-    
-            $token_network = $issuer_token->coin;
-            $token_name = $issuer_token->name;
-            $token_symbol = $issuer_token->symbol;
-            $token_value = $issuer_token->usdvalue;
-            $token_supply = $issuer_token->supply;
-            $token_decimal = $issuer_token->decimal;
-            $security_type = $issuer_token->security_type;
-            $user_id = $issuer_token->user_id;
-    
-            $user = User::findOrFail($user_id);
-            $email = $user->email;
-    
-            if (!$issuer_token->property || !$issuer_token->property->keystore_id) {
-                return back()->with('error', 'Keystore not linked to this property.');
+            $result = (new TokenizerService())->deployToken($id);
+
+            if (!empty($result['hasError'])) {
+                return back()->with('flash_error', $result['message'] ?? 'Token deployment failed.');
             }
 
-            if (!$issuer_token->blockchain) {
-                return back()->with('error', 'Chain Type not found');
-            }
-
-            $keystore = KeystoreModel::find($issuer_token->property->keystore_id);
-            if (!$keystore) {
-                return back()->with('error', 'Keystore not found.');
-            }
-    
-            $payload = [
-                "filename" => $keystore->keystore_file_path,
-                "password" => $keystore->getPassward()
-            ];
-            $result = callNodeOperations('read', $payload);
-            if ($result['status'] !== 'success') {
-                return back()->with('error', 'Failed to retrieve private key.');
-            }
-    
-            $response = callNodeOperations('getBalance', [
-                'address' => $keystore->public_address,
-                'chain' => $issuer_token->blockchain->abbreviation
-            ]);
-    
-            if (isset($response['status']) && $response['status'] !== 'success') {
-                return back()->with('error', 'Failed to retrieve balance.');
-            } elseif ($response['balance'] <= 0) {
-                return back()->with('error', 'Insufficient balance.');
-            }
-    
-            $payload = [
-                "chain" => $issuer_token->blockchain ? $issuer_token->blockchain->abbreviation : null,
-                "name" => $token_name,
-                "decimals" => $token_decimal,
-                "symbol" => $token_symbol,
-                "totalSupply" => $token_supply,
-                "privateKey" => $result['privatekey']
-            ];
-    
-            if ($issuer_token->property->token_type == 3) {
-                $details = callNodeOperations('deployUtilityToken', $payload);
-            } else {
-                $details = callNodeOperations('deploy', $payload);
-            }
-            if (
-                isset($details['status']) && 
-                $details['status'] === 'success' && 
-                isset($details['contract']['contract']['address']) && 
-                !empty($details['contract']['contract']['address'])) {
-
-                    $token = new UserContract();
-                    $token->property_id = $issuer_token->property_id;
-                    $token->user_id = $user->id;
-                    $token->coin = $issuer_token->blockchain ? $issuer_token->blockchain->blockchain_name : null;
-                    $token->blockchain_id = $issuer_token->blockchain ? $issuer_token->blockchain->id : null;
-                    $token->issued_by = $issuer_token->user_id;
-                    $token->tokenname = $token_name;
-                    $token->tokensymbol = $token_symbol;
-                    $token->tokenvalue = $token_value;
-                    $token->tokensupply = $token_supply;
-                    $token->tokenbalance = $token_supply;
-                    $token->contract_address = $details['contract']['contract']['address'];
-                    $token->decimal = $token_decimal;
-                    $token->token_image = $issuer_token->token_image;
-                    $token->banner_image = $issuer_token->banner_image;
-                    $token->token_type = $issuer_token->token_type;
-                    $token->status = 1;
-                    $token->save();
-        
-                    Property::where('id', $issuer_token->property_id)->update(['status' => 'active']);
-                    $issuer_token->status = 'live';
-                    $issuer_token->token_deploy_status = 1;
-                    $issuer_token->save();
-
-                    // Fallback for intermediate deployment success
-                    Property::where('id', $issuer_token->property_id)->update(['status' => 'active']);
-                    $issuer_token->status = 'live';
-                    $issuer_token->token_deploy_status = 1;
-                    $issuer_token->save();
-                    return back()->with('flash_success', "Token added successfully");
-            }
-    
-            if (isset($details['status']) && $details['status'] === 'failed') {
-                return back()->with('flash_error', 'Insufficient ' . $token_network . ' balance!!');
-            }
-            return back()->with('flash_error', 'Node server error');
+            return back()->with('flash_success', $result['message'] ?? 'Token added successfully');
         } catch (\Throwable $e) {
             logException($e, ['issuer_token_id' => $id]);
             
