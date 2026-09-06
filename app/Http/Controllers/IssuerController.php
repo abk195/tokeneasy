@@ -794,62 +794,75 @@ class IssuerController extends Controller {
             // $withdraw_model->status = "pending";
             // $withdraw_model->save();
 
-            if(config('app.is_demo')){
-                $tokenizerService = new TokenizerService();
-                $deployResult = $tokenizerService->deployToken($token->id);
+            // Deployment is unconditional. Issuers deploy directly and there is no
+            // admin approval step any more. This used to be gated on
+            // config('app.is_demo'), so with APP_IS_DEMO=false nothing was deployed
+            // and the asset sat in Pending Assets awaiting an approval that no
+            // longer exists.
+            $tokenizerService = new TokenizerService();
+            $deployResult = $tokenizerService->deployToken($token->id);
 
-                if (!empty($deployResult['hasError'])) {
-                    $message = $deployResult['message'] ?? 'Token deployment failed.';
-                    if (request()->ajax()) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => $message,
-                        ], 422);
-                    }
-                    return back()->with('flash_error', $message);
-                }
-
-                $this->storeDefaultPayments($token);
-
-                // Get the deployed contract information
-                $userContract = UserContract::where('property_id', $token->property_id)
-                    ->where('blockchain_id', $token->blockchain_id)
-                    ->first();
-
-                if ($userContract && $userContract->contract_address) {
-                    $blockchain = Blockchain::find($token->blockchain_id);
-                    $explorerUrl = $blockchain ? $blockchain->link . 'token/' : 'https://etherscan.io/token/';
-
+            if (!empty($deployResult['hasError'])) {
+                $message = $deployResult['message'] ?? 'Token deployment failed.';
+                if (request()->ajax()) {
                     return response()->json([
-                        'success' => true,
-                        'message' => 'Token deployed successfully',
-                        'contract_address' => $userContract->contract_address,
-                        'blockchain_explorer' => $explorerUrl,
-                        'token_name' => $token->name,
-                        'token_symbol' => $token->symbol,
-                        'redirect_url' => url('/issuer/property').'?property_id='.$token->property_id
-                    ]);
+                        'success' => false,
+                        'message' => $message,
+                    ], 422);
                 }
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Token deployment completed but contract details were not found.',
-                    'redirect_url' => url('/issuer/tokenRequest')
-                ], 422);
+                return back()->with('flash_error', $message);
             }
 
-            // For non-demo mode, return JSON response for AJAX requests
-            if (request()->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Property created successfully. Token deployment request submitted.',
-                    'redirect_url' => '/issuer/tokenRequest'
+            // Wiring up the default payment route is a convenience, not part of the
+            // deployment. The token is already live on-chain at this point, so a
+            // missing stablecoin configuration must not present itself as a failed
+            // deploy — the issuer can add payment addresses from the payments screen.
+            try {
+                $this->storeDefaultPayments($token);
+            } catch (\Throwable $e) {
+                logException($e, [
+                    'issuer_token_id' => $token->id,
+                    'property_id' => $token->property_id,
+                    'note' => 'Token deployed successfully; default payment wiring skipped.',
                 ]);
             }
 
-            return redirect('/issuer/tokenRequest')->with('flash_success', 'Property created successfully');
+            // Get the deployed contract information
+            $userContract = UserContract::where('property_id', $token->property_id)
+                ->where('blockchain_id', $token->blockchain_id)
+                ->first();
+
+            if (!$userContract || !$userContract->contract_address) {
+                $message = 'Token deployment completed but contract details were not found.';
+                if (request()->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message,
+                        'redirect_url' => url('/issuer/tokenRequest'),
+                    ], 422);
+                }
+                return back()->with('flash_error', $message);
+            }
+
+            $blockchain = Blockchain::find($token->blockchain_id);
+            $explorerUrl = $blockchain ? $blockchain->link . 'token/' : 'https://etherscan.io/token/';
+            $propertyUrl = url('/issuer/property') . '?property_id=' . $token->property_id;
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Token deployed successfully',
+                    'contract_address' => $userContract->contract_address,
+                    'blockchain_explorer' => $explorerUrl,
+                    'token_name' => $token->name,
+                    'token_symbol' => $token->symbol,
+                    'redirect_url' => $propertyUrl
+                ]);
+            }
+
+            return redirect($propertyUrl)->with('flash_success', 'Token deployed successfully');
         } catch (\Throwable $th) {
-            \Log::info($th);
+            logException($th, ['context' => 'storeProperty']);
 
             // Return JSON response for AJAX requests
             if (request()->ajax()) {

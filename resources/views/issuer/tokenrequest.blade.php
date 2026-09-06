@@ -33,7 +33,9 @@
                         <div class="container-fluid wizard-border">
                             <!-- start  -->
                             <div class="alert alert-info">
-                                <strong>Note:</strong> The tokens are awaiting approval by the admin once issued.
+                                <strong>Note:</strong> Tokens are deployed as soon as they are issued &mdash; no admin
+                                approval is needed. Anything listed here did not finish deploying. The most common
+                                cause is the deployment wallet having no balance for gas fees.
                             </div>
                             <div class="row">
                                 <div class="col-12 table-responsive">
