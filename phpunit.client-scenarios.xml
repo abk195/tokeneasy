@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Acceptance suite for the client's token deployment bug report and the seven
+    follow-up scenarios.
+
+    Run with:
+        php -d auto_prepend_file=tests/prepend.php vendor/bin/phpunit -c phpunit.client-scenarios.xml
+
+    The auto_prepend_file is required; see tests/prepend.php. Without it the suite
+    stops and says so rather than calling a live price feed.
+
+    Prerequisites (one time):
+        mysql -uroot -e "CREATE DATABASE tokeneasy_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        DB_DATABASE=tokeneasy_test php artisan migrate
+
+    See tests/Feature/ClientScenarios/README.md for what each file covers.
+
+    The suite runs inside transactions, so the schema is migrated once and the
+    data is rolled back after every test.
+-->
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="ClientScenarios">
+            <directory suffix="Test.php">./tests/Feature/ClientScenarios</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_IS_DEMO" value="true"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="MAIL_DRIVER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_DATABASE" value="tokeneasy_test"/>
+        <env name="FILESYSTEM_DRIVER" value="local"/>
+    </php>
+</phpunit>
