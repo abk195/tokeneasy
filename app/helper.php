@@ -160,19 +160,82 @@ if (!function_exists('callNodeOperations')) {
     }
 }
 
-if (!function_exists('currentCryptoPrices')) {
-    function currentCryptoPrices(){
-        $client=new Client;
-        $url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH,BNB,MATIC,USD&tsyms=USD&api_key=8ee0371023e4f0cea1a119bb379a5bbfb809f1051fc9529b52fdd82f9f61fd74';
+if (!function_exists('fetchCryptoPrices')) {
+    /**
+     * USD price per coin from cryptocompare, or null when unavailable.
+     *
+     * Callers used to index the response directly, which raised
+     * "Illegal string offset 'USD'" whenever the API answered with an error or
+     * rate-limit body instead of prices. Because Laravel promotes that notice to
+     * a thrown ErrorException, a third-party hiccup took down the investor
+     * dashboard and the buy flow.
+     *
+     * Results are cached briefly: this is called on every dashboard load and
+     * every buy request, which is what invites rate limiting in the first place.
+     *
+     * @return array<string,float>|null
+     */
+    function fetchCryptoPrices()
+    {
+        return \Illuminate\Support\Facades\Cache::remember('crypto_prices', now()->addMinutes(2), function () {
+            $url = 'https://min-api.cryptocompare.com/data/pricemulti'
+                 . '?fsyms=ETH,BNB,MATIC,USD&tsyms=USD'
+                 . '&api_key=8ee0371023e4f0cea1a119bb379a5bbfb809f1051fc9529b52fdd82f9f61fd74';
 
-        $response     = $client->get($url);
-        $cryptoprices = json_decode($response->getBody(),true);
-        $coin_type = [];
-        foreach ($cryptoprices as $key => $value) {
-            $coin_type[$key] = $value['USD'];
+            try {
+                $response = (new Client())->get($url, ['timeout' => 8, 'connect_timeout' => 5]);
+                $body     = json_decode($response->getBody()->getContents(), true);
+            } catch (\Throwable $e) {
+                logError('Crypto price lookup failed', ['error' => $e->getMessage()]);
+
+                return null;
+            }
+
+            if (!is_array($body)) {
+                logError('Crypto price lookup returned an unreadable body', ['body' => $body]);
+
+                return null;
+            }
+
+            $prices = [];
+            foreach ($body as $symbol => $quote) {
+                // An error body looks like {"Response":"Error","Message":"..."},
+                // so anything that is not a quote array is skipped.
+                if (is_array($quote) && isset($quote['USD']) && is_numeric($quote['USD'])) {
+                    $prices[$symbol] = (float) $quote['USD'];
+                }
+            }
+
+            if (empty($prices)) {
+                logError('Crypto price lookup returned no usable quotes', ['body' => $body]);
+
+                return null;
+            }
+
+            return $prices;
+        });
+    }
+}
+
+if (!function_exists('currentCryptoPrices')) {
+    /**
+     * Prices for the buy flow.
+     *
+     * Throws rather than defaulting to zero: these values price a real purchase,
+     * and a silent 0 would record a deal amount of nothing.
+     *
+     * @throws \RuntimeException
+     */
+    function currentCryptoPrices(){
+        $prices = fetchCryptoPrices();
+
+        if (empty($prices)) {
+            throw new \RuntimeException(
+                'Live crypto prices are unavailable right now, so this request cannot be priced. Please try again in a few minutes.'
+            );
         }
-      
-        return $coin_type;
+
+        return $prices;
     }
 }
 

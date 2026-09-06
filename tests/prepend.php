@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Deterministic stand-ins for the helpers in app/helper.php that reach
- * third-party services unrelated to the behaviour under test.
+ * Deterministic stand-in for the one helper that reaches a third-party service
+ * unrelated to the behaviour under test.
  *
  * app/helper.php declares its helpers behind function_exists() guards, so
  * whichever definition loads first wins. Composer's binary proxy requires
@@ -14,17 +14,39 @@
  * tests/bootstrap.php checks that this actually happened and fails loudly if it
  * did not, rather than letting the suite depend on a live price feed.
  *
- * callNodeOperations() is deliberately NOT stubbed here: the node calls are the
- * thing being verified, and they are served by the local stub server in
+ * Only fetchCryptoPrices() is replaced — the HTTP boundary itself. The callers
+ * that interpret its result (currentCryptoPrices() throwing for the buy flow,
+ * HomeController::getCryptoPrices() degrading to zero for display) are real
+ * application logic and stay under test. Tests simulate an outage by setting
+ * $GLOBALS['__test_crypto_prices'] to null.
+ *
+ * callNodeOperations() is deliberately NOT stubbed: the node calls are the thing
+ * being verified, and they are served by the local stub server in
  * tests/Support/Stub/node-stub-server.php.
  */
 
-if (!function_exists('currentCryptoPrices')) {
+if (!function_exists('fetchCryptoPrices')) {
     /**
-     * The real implementation calls min-api.cryptocompare.com on every buy
-     * request, with no handling for a failed or rate-limited response.
+     * The real implementation calls min-api.cryptocompare.com.
+     *
+     * @return array<string,float>|null
      */
-    function currentCryptoPrices()
+    function fetchCryptoPrices()
+    {
+        if (array_key_exists('__test_crypto_prices', $GLOBALS)) {
+            // Lets a test simulate an unexpected failure inside a caller, rather
+            // than the handled "feed unavailable" case that null represents.
+            if ($GLOBALS['__test_crypto_prices'] === '__throw__') {
+                throw new \RuntimeException('Simulated price feed failure.');
+            }
+
+            return $GLOBALS['__test_crypto_prices'];
+        }
+
+        return testCryptoPriceDefaults();
+    }
+
+    function testCryptoPriceDefaults()
     {
         return [
             'ETH'   => 2000.0,

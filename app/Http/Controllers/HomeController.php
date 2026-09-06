@@ -156,15 +156,18 @@ class HomeController extends Controller
             $user_tokens = $groupedTokens->get('success', collect());
             $pendingApprovalRequests = $groupedTokens->get('inReview', collect());
             $pendingBuyRequests = $groupedTokens->get('inProgress', collect());
-            // Assign commission (interest) directly from loaded property relation
+            // Assign commission (interest) directly from loaded property relation.
+            // ?? does not protect a property read on null, and Laravel promotes
+            // that notice to a thrown exception, so one holding whose contract or
+            // property is missing would otherwise take the whole dashboard down.
             $user_tokens->each(function ($token) {
-                $token->commission = $token->usercontract->property->interest ?? 0;
+                $token->commission = optional(optional($token->usercontract)->property)->interest ?? 0;
             });
 
             // Calculate total net investment
             $totalNetInvestment = $user_tokens->sum(function ($token) {
-                $actualAmount = $token->usercontract->tokenvalue ?? 0;
-                $quantity = $token->tokenTransaction->number_of_token ?? 0;
+                $actualAmount = optional($token->usercontract)->tokenvalue ?? 0;
+                $quantity = optional($token->tokenTransaction)->number_of_token ?? 0;
                 return $actualAmount * $quantity;
             });
 
@@ -186,8 +189,18 @@ class HomeController extends Controller
                 'tokenCount'
             ));
         } catch (\Throwable $th) {
-            \Log::error('Dashboard error', ['line' => $th->getLine(), 'message' => $th->getMessage()]);
-            return back()->with('flash_error', 'Unable to get dashboard details. Please try again later');
+            \Log::error('Dashboard error', [
+                'line' => $th->getLine(),
+                'file' => $th->getFile(),
+                'message' => $th->getMessage(),
+            ]);
+
+            // Deliberately not back(). After login the referer is /login, which
+            // bounces an authenticated investor straight back to /home — so a
+            // dashboard that always throws produced an infinite redirect loop
+            // rather than an error. Send them somewhere that cannot redirect here.
+            return redirect()->route('propertyList')
+                ->with('flash_error', 'Unable to get dashboard details. Please try again later');
         }
     }
 
@@ -1546,15 +1559,17 @@ class HomeController extends Controller
      */
     public function getCryptoPrices()
     {
-        $client=new Client;
-        $url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH,BNB,MATIC,USD&tsyms=USD&api_key=8ee0371023e4f0cea1a119bb379a5bbfb809f1051fc9529b52fdd82f9f61fd74';
-
-        $response     = $client->get($url);
-        $cryptoprices = json_decode($response->getBody(),true);
-        $coin_type = [];
-        foreach ($cryptoprices as $key => $value) {
-            $coin_type[$key] = $value['USD'];
-        }
+        // Display path: a price feed outage must not take a page down, so an
+        // unavailable feed reports zero rather than throwing. This used to index
+        // the raw response and died with "Illegal string offset 'USD'" whenever
+        // the API answered with an error body, which put the investor dashboard
+        // into a redirect loop via the catch block's back().
+        $coin_type = fetchCryptoPrices() ?: [
+            'ETH'   => 0,
+            'BNB'   => 0,
+            'MATIC' => 0,
+            'USD'   => 0,
+        ];
         // $coin_type        = [];
         // $coin_type['ETH'] = 0;
         // $coin_type['MATIC'] = 0;

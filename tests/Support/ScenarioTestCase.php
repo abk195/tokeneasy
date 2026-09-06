@@ -40,6 +40,9 @@ abstract class ScenarioTestCase extends TestCase
 
         FakeNodeServer::reset();
 
+        // Working price feed by default; see tests/prepend.php.
+        $GLOBALS['__test_crypto_prices'] = testCryptoPriceDefaults();
+
         config([
             'app.nodeApp'  => FakeNodeServer::baseUrl(),
             'app.is_demo'  => true,
