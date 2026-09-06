@@ -11,6 +11,7 @@ use App\InvestorShares;
 use App\UserToken;
 use App\Models\EWTransferLogsModel;
 use App\WhiteListedWalletAddress;
+use App\Exceptions\CustomException;
 use App\Services\InvestorService;
 use Illuminate\Support\Facades\DB;
 use Auth;
@@ -307,15 +308,17 @@ class InvestorController extends Controller
     }
     
     public function tranferTokensToEW($user_id, $contract_id, Request $request, InvestorService $service){
+        // Validated outside the try: the catch below turns everything into a 500,
+        // so a ValidationException raised in here reached the investor as
+        // "an unexpected error occurred" instead of telling them what to fix.
+        $validated = $request->validate([
+            'recipient_wallet_id' => 'required|integer|exists:whitelisted_wallet_addresses,id',
+            'amount' => 'required|numeric|min:1'
+        ]);
+
         try {
             $user = Auth::user();
-    
-            // Validate request data
-            $validated = $request->validate([
-                'recipient_wallet_id' => 'required|integer|exists:whitelisted_wallet_addresses,id',
-                'amount' => 'required|numeric|min:1'
-            ]);
-    
+
             // Fetch investor share
             $investorShare = InvestorShares::where('user_id', $user->id)
                 ->where('user_contract_id', $contract_id)
@@ -364,7 +367,20 @@ class InvestorController extends Controller
                 'success' => true,
                 'message' => 'Tokens transferred successfully.'
             ]);
-    
+
+        } catch (CustomException $e) {
+            // The service re-checks the balance under a row lock, which is what
+            // catches a second concurrent transfer. Report what it actually said.
+            logError('Token transfer rejected', [
+                'user_id' => $user_id,
+                'contract_id' => $contract_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             logError('Token transfer failed', [
                 'user_id' => $user_id,

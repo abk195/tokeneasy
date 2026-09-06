@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class IssuerTokenRequest extends Model
 {
-    //
+    /**
+     * token_deploy_status is a 0/1 flag. Casting it keeps reads integer-typed
+     * whatever the driver hands back, so comparisons like
+     * `$request->token_deploy_status === 1` behave.
+     */
+    protected $casts = [
+        'token_deploy_status' => 'integer',
+    ];
 
     public function user()
     {

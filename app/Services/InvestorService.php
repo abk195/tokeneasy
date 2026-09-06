@@ -4,6 +4,7 @@ namespace App\Services;
 use App\UserToken;
 use App\UserContract;
 use App\InvestorShares;
+use App\Exceptions\CustomException;
 use App\WhiteListedWalletAddress;
 use App\Models\EWTransferLogsModel;
 use Illuminate\Support\Facades\DB;
@@ -122,12 +123,18 @@ class InvestorService
                 ->lockForUpdate()
                 ->first();
     
+            // CustomException is (message, array $data, int $statusCode) — the
+            // code is the third argument, not the second.
             if (!$investorTokenWallets) {
-                throw new CustomException('Investor token wallet not found.', 404);
+                throw new CustomException('Investor token wallet not found.', [], 404);
             }
-    
+
             if ($investorTokenWallets->internal_wallet < $tokenCount) {
-                throw new CustomException('Insufficient token in the Internal Wallet.', 400);
+                throw new CustomException(
+                    'Insufficient token in the Internal Wallet. Available: ' . $investorTokenWallets->internal_wallet,
+                    [],
+                    400
+                );
             }
     
             $payload = [

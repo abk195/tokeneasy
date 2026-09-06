@@ -17,6 +17,7 @@ use App\WithdrawEth;
 use App\Support;
 use App\UserContract;
 use Carbon\Carbon;
+use App\Document;
 use App\KycDocument;
 use App\AdminAddress;
 use App\KrakenResult;
@@ -166,6 +167,81 @@ class AdminController extends Controller
         } catch (Exception $e) {
             return back()->with('flash_error', trans('api.user.user_not_found'));
         }
+    }
+
+    /**
+     * Approve or reject one of a user's KYC documents.
+     *
+     * Both buttons on admin/user/document.blade.php post here and carry the
+     * target state in `status`, which is why reject() below simply defers to
+     * this method.
+     */
+    public function userdocument_approve(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|integer',
+            'doc_id'  => 'required|integer',
+            'status'  => 'required|in:APPROVED,REJECTED,PENDING',
+        ]);
+
+        try {
+            $kyc = KycDocument::where('user_id', $request->user_id)
+                ->where('document_id', $request->doc_id)
+                ->first();
+
+            if (!$kyc) {
+                return back()->with('flash_error', trans('api.something_went_wrong'));
+            }
+
+            $kyc->status = $request->status;
+            $kyc->save();
+
+            $user = User::find($kyc->user_id);
+            if ($user) {
+                $user->kyc = $this->hasApprovedEveryMandatoryDocument($user->id) ? 1 : 0;
+                $user->save();
+            }
+
+            return back()->with('flash_success', trans('api.success_status'));
+        } catch (\Throwable $e) {
+            logException($e, [
+                'user_id' => $request->user_id,
+                'doc_id'  => $request->doc_id,
+                'status'  => $request->status,
+            ]);
+
+            return back()->with('flash_error', trans('api.something_went_wrong'));
+        }
+    }
+
+    /**
+     * Reject one of a user's KYC documents.
+     */
+    public function userdocument_reject(Request $request)
+    {
+        $request->merge(['status' => 'REJECTED']);
+
+        return $this->userdocument_approve($request);
+    }
+
+    /**
+     * A user is KYC-verified once every mandatory document has been approved.
+     */
+    private function hasApprovedEveryMandatoryDocument($userId)
+    {
+        $mandatory = Document::where('mandatory', '1')->pluck('id');
+
+        if ($mandatory->isEmpty()) {
+            return false;
+        }
+
+        $approved = KycDocument::where('user_id', $userId)
+            ->whereIn('document_id', $mandatory)
+            ->where('status', 'APPROVED')
+            ->distinct()
+            ->count('document_id');
+
+        return $approved >= $mandatory->count();
     }
 
     /**

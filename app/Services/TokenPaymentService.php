@@ -40,7 +40,7 @@ class TokenPaymentService
             if ($userToken->current_stage == 3) {
                 throw new Exception("Request can't be discarded after payment is done.");
             }
-            $this->isTokenAvailable($userContract,$userToken);
+            $this->isTokenAvailable($userToken, $userContract);
             $userToken->current_stage = $requestData['currentStep'];
             $userToken->save();
             // Route to correct stage handler
@@ -406,7 +406,8 @@ class TokenPaymentService
 
              // Now check with full safety
             if ($userContract->tokenbalance < $userToken->token_acquire) {
-                DB::rollBack();
+                // No rollback here: the catch below owns it. Rolling back twice
+                // unwinds the caller's own transaction as well as this one.
                 throw new \Exception('Insufficient token supply.');
             }
 
@@ -470,7 +471,7 @@ class TokenPaymentService
 
                 // Cross-check with what's in the contract record
                 if (bccomp($userContract->tokensupply, bcadd(bcadd($totalSold, $userToken->token_acquire, 2), $userContract->tokenbalance, 2), 2) !== 0) {
-                    DB::rollBack();
+                    // As above: the catch below performs the rollback.
                     throw new \Exception(
                         'Token balance mismatch: remaining tokens calculation failed. ' .
                         'Total Supply: ' . $userContract->tokensupply . ', ' .
@@ -496,6 +497,10 @@ class TokenPaymentService
             ]);
 
 
+            // Must stay before the return: this used to sit after it, so the
+            // investor was never told their tokens had arrived.
+            $this->addTokenTransferedNotification($userToken, $isAutomaticPayment);
+
             return [
                 'status' => 'success',
                 'userTokenTransactionData' => $txnData
@@ -517,8 +522,6 @@ class TokenPaymentService
             $userToken->save();
             throw $e;
         }
-
-        $this->addTokenTransferedNotification($userToken,$isAutomaticPayment);
     }
 
     public function isTokenAvailable($userToken,$userContract = null ){

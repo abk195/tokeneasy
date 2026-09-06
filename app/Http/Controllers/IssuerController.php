@@ -62,17 +62,37 @@ class IssuerController extends Controller {
             // return redirect('login');
             $user = Auth::user();
             (new CommonController)->updateAddress($user);
-            $issuer_token = IssuerTokenRequest::where('user_id', $user->id)->where('status','pending')->whereHas('property', function ($q) {
-                $q->where('deleted_at', null);
-            });
 
-            $tokenCounts = Property::select('token_type', DB::raw('COUNT(*) as total'))
-                ->where('user_id', $user->id)
-                ->where('status', 'active')
+            // A fresh builder per call. These used to share one builder, so
+            // counting the rejected requests appended a second status condition
+            // to the pending query and always returned zero.
+            $tokenRequestCount = function ($status) use ($user) {
+                return IssuerTokenRequest::where('user_id', $user->id)
+                    ->where('status', $status)
+                    ->whereHas('property', function ($q) {
+                        $q->whereNull('deleted_at');
+                    })
+                    ->count();
+            };
+
+            // One definition of "deployed" behind both the counts and the value,
+            // so the two figures on the dashboard always describe the same assets.
+            $deployedAssets = function () use ($user) {
+                return Property::where('user_id', $user->id)
+                    ->where('status', 'active')
+                    ->whereHas('userContract', function ($query) {
+                        $query->whereNotNull('contract_address')->where('contract_address', '<>', '');
+                    });
+            };
+
+            $tokenCounts = $deployedAssets()
+                ->select('token_type', DB::raw('COUNT(*) as total'))
                 ->groupBy('token_type')
                 ->pluck('total', 'token_type');
 
-            $totalDealSize=Property::where('user_id',$user->id)->sum('totalDealSize');
+            // Deployed assets only: this used to sum every property the issuer
+            // owned, so drafts that were never deployed inflated the headline.
+            $totalDealSize = $deployedAssets()->sum('totalDealSize');
 
             // $tokens=UserContract::select(\DB::raw("COUNT(*) as count"))->where('user_id',$user->id)->where('status',1)
             // ->whereYear('created_at', date('Y'))
@@ -91,9 +111,9 @@ class IssuerController extends Controller {
                     $tokens[$i] = 0;
                 }
             }
-            $request_token = $issuer_token->count();
+            $request_token = $tokenRequestCount('pending');
 
-            $rejected_token = $issuer_token->where('status', 'rejected')->count();
+            $rejected_token = $tokenRequestCount('rejected');
 
             $tokenCounts = [
                 'property' => $tokenCounts[1] ?? 0,
@@ -103,8 +123,10 @@ class IssuerController extends Controller {
             // Get all the notifications
             $notifications  = Notification::where('user_id',$user->id)->where('is_viewed',0)->get();
 
-            // Delete  notifications as they're delivered
-            Notification::where('user_id', $user->id)->delete();
+            // Mark just these as delivered. This used to delete every notification
+            // the user had, so anything raised while they were on another screen
+            // was destroyed unseen and a reload emptied the list.
+            Notification::whereIn('id', $notifications->pluck('id'))->update(['is_viewed' => 1]);
             return view('issuer.dashboard', compact('totalDealSize', 'request_token', 'tokens', 'rejected_token','tokenCounts','notifications'));
         } catch (\Throwable $th) {
             dd($th->getMessage(),$th->getLine());

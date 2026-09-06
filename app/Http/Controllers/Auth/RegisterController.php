@@ -146,14 +146,20 @@ class RegisterController extends Controller
         $email = strtolower($data['email']);
         $email_token = base64_encode($email);
 
+        // These used to be assigned straight from the request. An UploadedFile
+        // stringifies to its PHP temp path, which is deleted when the request
+        // ends, so the stored document was never retrievable.
+        $iss_doc_url = $this->uploadDocument($data['issuer_pros_doc'] ?? null, 'issuer_doc');
+        $iss_kyc_doc_url = $this->uploadDocument($data['issuer_kyc_doc'] ?? null, 'issuer_kyc_doc');
+
         $userdata = [
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'user_type' => $data['user_type'],
             'email_token' => $email_token,
-            'issuer_pros_doc' => $data['issuer_pros_doc'],
-            'issuer_kyc_doc' => $data['issuer_kyc_doc'],
+            'issuer_pros_doc' => $iss_doc_url,
+            'issuer_kyc_doc' => $iss_kyc_doc_url,
             'country_id'    => $data['country_id'],
             'verified' => 1,
         ];

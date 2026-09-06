@@ -168,11 +168,13 @@ class HomeController extends Controller
                 return $actualAmount * $quantity;
             });
 
-            // Fetch and delete notifications in one query
+            // Fetch unread notifications and mark just those as delivered. This
+            // used to delete every notification the user had, so anything raised
+            // while they were on another screen was destroyed unseen.
             $notifications = Notification::where('user_id', $user->id)
                 ->where('is_viewed', 0)
                 ->get();
-            Notification::where('user_id', $user->id)->delete();
+            Notification::whereIn('id', $notifications->pluck('id'))->update(['is_viewed' => 1]);
             return view('dashboard', compact(
                 'user',
                 'notifications',
@@ -197,14 +199,27 @@ class HomeController extends Controller
         try {
             $token_type = ($type == 'asset') ? 2 : 1;
             // $property   = (new Property)->getProperty(0, 0, 0, $token_type);
-            $properties = Property::with(['userContract', 'propertyImages','blockchain'])->whereNotIn('status',['block','pending'])->orderBy('created_at', 'desc')->get();
+            // Only assets with a deployed contract belong on the marketplace: they
+            // are the only ones an investor can buy, and both this method and the
+            // view read the contract without a null check. A half-deployed asset
+            // used to throw here and take every other asset down with it.
+            $properties = Property::with(['userContract', 'propertyImages','blockchain'])
+                ->whereNotIn('status',['block','pending'])
+                ->whereHas('userContract', function ($query) {
+                    $query->whereNotNull('contract_address')->where('contract_address', '<>', '');
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
             $properties   = (new CommonController)->calculatePercentage($properties);
             foreach ($properties as $property) {
+                if (empty($property->userContract)) {
+                    continue;
+                }
 
                 $remainingTokens = round(($property->userContract->tokensupply - $property->userContract->tokenbalance));
                 $property->sold_percentage = $property->userContract->tokensupply > 0 ? round(($remainingTokens / $property->userContract->tokensupply) * 100, 2) : 0;
                 $property->accuired_usd = $property->userContract->tokenvalue *  $remainingTokens;
-                if (!empty($property->userContract) && !empty( $property->blockchain)) {
+                if (!empty( $property->blockchain)) {
 
                     $property->contract_address = $property->userContract->contract_address;
 

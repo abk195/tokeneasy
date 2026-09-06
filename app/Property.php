@@ -144,10 +144,16 @@ class Property extends Model
         }
 
         if (isset($token_type)) {
-            $query->where('token_type', $token_type);
-            if ($token_type == 1) {
-                $query->orWhereNull('token_type');
-            }
+            // Grouped: an ungrouped orWhereNull() escapes the status filters above
+            // and pulls pending and blocked properties into the result.
+            $query->where(function ($query) use ($token_type) {
+                $query->where('token_type', $token_type);
+
+                // Legacy rows predate token_type and are property tokens.
+                if ($token_type == 1) {
+                    $query->orWhereNull('token_type');
+                }
+            });
         }
 
         if ($id != 0)
