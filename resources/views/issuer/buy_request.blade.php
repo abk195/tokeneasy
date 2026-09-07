@@ -315,10 +315,13 @@
         selectedRequestId = data.request.id;
 
         // Investor details
-        document.getElementById('investorName').innerText = data.user.name;
+        document.getElementById('investorName').innerText = data?.user?.name || 'N/A';
 
-        document.getElementById('investorAddress').innerText = data.user_details.address_line_1 || 'N/A';
-        document.getElementById('investorCountry').innerText =  data.user_details.residence || 'N/A';
+        // user_details is the investor's identity record, which is null until they
+        // complete their profile. Reading through it unguarded threw and stopped
+        // openApproveModal() before the modal opened, so Approve did nothing.
+        document.getElementById('investorAddress').innerText = data?.user_details?.address_line_1 || 'N/A';
+        document.getElementById('investorCountry').innerText = data?.user_details?.residence || 'N/A';
         const countryCode = data?.user_details?.primary_country_code || '';
         const phone = data?.user_details?.primary_phone || '';
         document.getElementById('investorPhone').innerText = (countryCode + phone) || 'N/A';
@@ -326,13 +329,13 @@
 
 
         // Property/Asset
-        document.getElementById('propertyName').innerText = data.request.property.propertyName;
+        document.getElementById('propertyName').innerText = data?.request?.property?.propertyName || 'N/A';
 
         // Custody info
-        document.getElementById('wallet_type').innerText = data.request.wallet_type;
+        document.getElementById('wallet_type').innerText = data?.request?.wallet_type || 'N/A';
 
         // Payment details
-        document.getElementById('paymentMode').innerText = data.request.payment_mode.replace(/_/g, ' ');
+        document.getElementById('paymentMode').innerText = (data?.request?.payment_mode || '').replace(/_/g, ' ') || 'N/A';
         const img = document.getElementById('paymentProofImage');
         if (img) {
             if (data.payment_proof_img_url) {
@@ -367,8 +370,8 @@
 
         // Token details
         document.getElementById('approveRequestId').value = data.request.id;
-        document.getElementById('availableTokensLabel').innerText = data.request.usercontract.tokenbalance;
-        document.getElementById('requestedTokensLabel').innerText = data.request.token_acquire;
+        document.getElementById('availableTokensLabel').innerText = data?.request?.usercontract?.tokenbalance ?? 'N/A';
+        document.getElementById('requestedTokensLabel').innerText = data?.request?.token_acquire ?? 'N/A';
         document.getElementById('approveNote').value = '';
 
         const availabilityMessage = document.getElementById('availabilityMessage');
