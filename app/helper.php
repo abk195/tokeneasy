@@ -178,9 +178,14 @@ if (!function_exists('fetchCryptoPrices')) {
     function fetchCryptoPrices()
     {
         return \Illuminate\Support\Facades\Cache::remember('crypto_prices', now()->addMinutes(2), function () {
-            $url = 'https://min-api.cryptocompare.com/data/pricemulti'
-                 . '?fsyms=ETH,BNB,MATIC,USD&tsyms=USD'
-                 . '&api_key=8ee0371023e4f0cea1a119bb379a5bbfb809f1051fc9529b52fdd82f9f61fd74';
+            // config(), not env(): env() returns null once config:cache has run.
+            $apiKey = config('services.cryptocompare.key');
+
+            $url = 'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH,BNB,MATIC,USD&tsyms=USD';
+
+            if (!empty($apiKey)) {
+                $url .= '&api_key=' . urlencode($apiKey);
+            }
 
             try {
                 $response = (new Client())->get($url, ['timeout' => 8, 'connect_timeout' => 5]);

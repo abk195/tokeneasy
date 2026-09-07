@@ -31,6 +31,15 @@ return [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 
+    /*
+     * Live crypto prices. The key used to be hardcoded in app/helper.php, which
+     * meant every environment shared one quota and the key could not be rotated
+     * without a code release.
+     */
+    'cryptocompare' => [
+        'key' => env('CRYPTOCOMPARE_API_KEY'),
+    ],
+
     'stripe' => [
         'model' => App\User::class,
         'key' => env('STRIPE_KEY'),
