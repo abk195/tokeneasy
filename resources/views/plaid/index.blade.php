@@ -65,8 +65,8 @@
                                                 </a>
                                                 <button type="button"
                                                    class="btn btn-danger"
-                                                   data-toggle="modal"
-                                                   data-target="#deleteModal{{ $plaidItem->id }}">
+                                                   data-toggle="modal" data-bs-toggle="modal"
+                                                   data-target="#deleteModal{{ $plaidItem->id }}" data-bs-target="#deleteModal{{ $plaidItem->id }}">
                                                     <i class="fa fa-trash"></i>&nbsp;
                                                     Remove
                                                 </button>
@@ -82,7 +82,7 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4 class="modal-title">Confirm Removal</h4>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -91,7 +91,7 @@
                                             <p class="text-muted">This action cannot be undone.</p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="button" class="btn btn-default btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
                                             <a href="{{ route('plaid.remove-item', ['itemId' => $plaidItem->id]) }}"
                                                class="btn btn-danger">
                                                 <i class="fa fa-trash"></i>&nbsp;

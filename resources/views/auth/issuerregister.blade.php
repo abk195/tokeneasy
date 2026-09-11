@@ -258,19 +258,19 @@
                 </form>
                 <!-- Button trigger modal -->
                 <?php /*
-                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#exampleModalCenter" data-bs-target="#exampleModalCenter">
                                                                                                                             I'am a Borrower
                                                                                                                             </button>
 
 
                                                                                                                               <!-- Button trigger modal -->
-                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#investor">
+                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#investor" data-bs-target="#investor">
                                                                                                                             I'am a Investor
                                                                                                                             </button>
 
 
                                                                                                                                               <!-- Button trigger modal -->
-                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#broker">
+                                                                                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#broker" data-bs-target="#broker">
                                                                                                                             I'am a Broker
                                                                                                                             </button>
                                                                                                                             */
@@ -293,7 +293,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Borrower</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -303,7 +303,7 @@
                     past projects to get an idea on how it all works.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -316,7 +316,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Investor</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -326,7 +326,7 @@
                     much more.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -339,7 +339,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Broker</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -349,7 +349,7 @@
                     past projects to get an idea on how it all works.
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

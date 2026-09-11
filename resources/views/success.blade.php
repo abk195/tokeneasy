@@ -15,7 +15,7 @@
       <div class="modal-body text-center">
         <h4>Success!</h4> 
         <p>Your account has been created successfully.</p>
-        <button class="btn btn-success" data-dismiss="modal"><span>Start Exploring</span> <i class="material-icons">&#xE5C8;</i></button>
+        <button class="btn btn-success" data-dismiss="modal" data-bs-dismiss="modal"><span>Start Exploring</span> <i class="material-icons">&#xE5C8;</i></button>
       </div>
     </div>
   </div>

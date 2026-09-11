@@ -62,7 +62,7 @@
                       @endif
                       <!-- <div class="row">
                         <div class="col-sm-3 preview-btn">
-                          <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-center">Preview</button>
+                          <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-bs-toggle="modal" data-target=".bs-example-modal-center" data-bs-target=".bs-example-modal-center">Preview</button>
                         </div>
                         <div class="col-sm-3 preview-btn">
                           <input type="submit" class="btn btn-primary waves-effect waves-light" value="Procced">
@@ -77,7 +77,7 @@
                 @endforeach
                 <div class="row">
                   <div class="col-sm-3 preview-btn">
-                    <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-center">Preview</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-bs-toggle="modal" data-target=".bs-example-modal-center" data-bs-target=".bs-example-modal-center">Preview</button>
                   </div>
                   <div class="col-sm-3 preview-btn">
                     <input type="submit" class="btn btn-primary waves-effect waves-light" value="Procced">
@@ -94,8 +94,8 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-3 preview-btn"><button type="button"
-                      class="btn btn-primary waves-effect waves-light" data-toggle="modal"
-                      data-target=".bs-example-modal-center">Preview</button></div>
+                      class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-bs-toggle="modal"
+                      data-target=".bs-example-modal-center" data-bs-target=".bs-example-modal-center">Preview</button></div>
                   <div class="col-sm-3 preview-btn"><button type="button"
                       class="btn btn-primary waves-effect waves-light">Proceed</button></div>
                 </div>
@@ -112,13 +112,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="myCenterModalLabel">Preview</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-hidden="true">×</button>
           </div>
           <div class="modal-body text-center">
             <img src="assets/images/id.png" style="width:75%;">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary waves-effect" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

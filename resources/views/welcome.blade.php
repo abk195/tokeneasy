@@ -170,7 +170,7 @@
                            </div>
                             <h4>Investor Protection</h4>
                             <div class="text-center">
-                              <a type="button" class="btn read-btn" data-toggle="modal" data-target="#myModal">Read More</a>
+                              <a type="button" class="btn read-btn" data-toggle="modal" data-bs-toggle="modal" data-target="#myModal" data-bs-target="#myModal">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                       <div class="modal-dialog first-model">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
                             <h4 class="modal-title">INVESTOR PROTECTION (Blockchain Security)</h4>
                           </div>
                           <div class="modal-body">
@@ -188,7 +188,7 @@ person, group, or organization controls them. In addition, blockchains rely on a
 This helps assure investors that no one can falsify transactions after the fact. These protections are also embedded in technologies like smart contracts and multi signature wallets, utilized on this platform to ensure every step in the real estate transactional process is verified through digital consensus, thus making every step more efficient, more transparent and more secure. There is no higher level of investment security.</p>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
@@ -202,7 +202,7 @@ This helps assure investors that no one can falsify transactions after the fact.
                             </div>
                             <h4>Legal Compliance</h4>
                             <div class="text-center">
-                              <a type="button" class="btn read-btn" data-toggle="modal" data-target="#myModal2">Read More</a>
+                              <a type="button" class="btn read-btn" data-toggle="modal" data-bs-toggle="modal" data-target="#myModal2" data-bs-target="#myModal2">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -211,14 +211,14 @@ This helps assure investors that no one can falsify transactions after the fact.
                       <div class="modal-dialog first-model">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
                             <h4 class="modal-title">LEGAL COMPLIANCE</h4>
                           </div>
                           <div class="modal-body">
                             <p class="model-para-class">There is growing cohesion as it relates to a regulatory framework for tokenized assets internationally. Entities like the European Securities Market Authority, the Securities and Exchange Commission (USA) and the Canadian Securities Administrators all agree on the need for a set of standards to ensure protection and recourse for issuance and custody of digitized assets. As such, we have incorporated KYC/ AML (Know Your Customer and Anti-Money Laundering) adherence as well as compliance standards for accredited and non accredited investors.</p>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
@@ -232,7 +232,7 @@ This helps assure investors that no one can falsify transactions after the fact.
                             </div>
                             <h4>FRACTIONAL OWNERSHIP</h4>
                             <div class="text-center">
-                              <a type="button" class="btn read-btn" data-toggle="modal" data-target="#myModal3">Read More</a>
+                              <a type="button" class="btn read-btn" data-toggle="modal" data-bs-toggle="modal" data-target="#myModal3" data-bs-target="#myModal3">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -241,14 +241,14 @@ This helps assure investors that no one can falsify transactions after the fact.
                       <div class="modal-dialog first-model">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
                             <h4 class="modal-title">FRACTIONAL OWNERSHIP</h4>
                           </div>
                           <div class="modal-body">
                             <p class="model-para-class">Look at a security token like a poker chip, where it represents a monetary value . In the case of this platform, a token represents your share, or ownership stake in a real estate offering. Tokenization on Distributed Ledger Technology (DLT- Blockchain) removes geographical and intermediary barriers which existed previously. What counts as “sufficient capital” will also change with tokenization. A virtual token does not necessarily have to be sold as a whole unit. Instead, the code underlying the token may permit it to be subdivided, allowing the issuer or subsequent holders to sell fractional tokens at lower prices. This opens the market to smaller investors who could not otherwise participate and enables greater opportunities for diversification for wealthier investors. Owning “a piece of the pie” has never been easier or safer.</p>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
@@ -266,7 +266,7 @@ This helps assure investors that no one can falsify transactions after the fact.
                             </div>
                             <h4>LIQUIDITY</h4>
                             <div class="text-center">
-                              <a type="button" class="btn read-btn" data-toggle="modal" data-target="#myModal4">Read More</a>
+                              <a type="button" class="btn read-btn" data-toggle="modal" data-bs-toggle="modal" data-target="#myModal4" data-bs-target="#myModal4">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -275,14 +275,14 @@ This helps assure investors that no one can falsify transactions after the fact.
                       <div class="modal-dialog first-model">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
                             <h4 class="modal-title">LIQUIDITY</h4>
                           </div>
                           <div class="modal-body">
                             <p class="model-para-class">Chief among the advantages of tokenization, is liquidity. Liquidity refers to the ease with which an asset can be bought or sold. Currently, real estate investments are considered relatively illiquid. It affects the price such investments command, imposing an illiquidity discount on the underlying assets’ true value. Tokenization has the potential to recapture at least some of the value lost to illiquidity, by making real estate investments easier to buy and sell.</p>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>
@@ -296,7 +296,7 @@ This helps assure investors that no one can falsify transactions after the fact.
                             </div>
                             <h4>PERFORMANCE TRACKING</h4>
                             <div class="text-center">
-                              <a type="button" class="btn read-btn" data-toggle="modal" data-target="#myModal5">Read More</a>
+                              <a type="button" class="btn read-btn" data-toggle="modal" data-bs-toggle="modal" data-target="#myModal5" data-bs-target="#myModal5">Read More</a>
                             </div>
                         </div>
                     </div>
@@ -305,7 +305,7 @@ This helps assure investors that no one can falsify transactions after the fact.
                       <div class="modal-dialog first-model">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
                             <h4 class="modal-title">PERFORMANCE TRACKING</h4>
                           </div>
                           <div class="modal-body">
@@ -313,7 +313,7 @@ This helps assure investors that no one can falsify transactions after the fact.
 your performance and execute as a buyer or seller 24/7.</p>
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default para-btn" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                           </div>
                         </div>
                       </div>

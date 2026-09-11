@@ -99,7 +99,7 @@
                         </div>
                         @endforeach
                         <div class="currencies-container">
-                            {{-- <a href="#" data-toggle="modal" class="btn btn-primary" style="margin-bottom: 20px;" data-target="#exampleModal">
+                            {{-- <a href="#" data-toggle="modal" data-bs-toggle="modal" class="btn btn-primary" style="margin-bottom: 20px;" data-target="#exampleModal" data-bs-target="#exampleModal">
 
                                 Withdraw Shares
                             </a> --}}
@@ -410,7 +410,7 @@
                             <div class="modal-content" style="">
                             <div class="modal-header deposit-fiat-header">
                                 <h4 class="modal-title" id="exampleModalLabel">Withdraw Share</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
@@ -516,7 +516,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" id="SubmitText" class="btn btn-primary">Send Request</button>
                             </div>
                             </form>

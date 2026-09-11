@@ -3,7 +3,7 @@
         <div class="modal-content p-4">
             <div class="modal-header border-0">
                 <h5 class="modal-title">Transfer <span id="modalPropertyName"></span> Tokens</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
             </div>
 
             <div class="modal-body">
@@ -42,7 +42,7 @@
             </div>
 
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Cancel</button>
                 <button class="btn btn-primary" id="confirmTransferBtn">Confirm Transfer</button>
             </div>
         </div>

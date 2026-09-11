@@ -5,7 +5,7 @@
                 <h5 class="modal-title">
                     <span id="viewModalTokenName"></span>  External Wallets
                 </h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal">&times;</button>
             </div>
 
             <div class="px-4 pb-2 text-muted" id="viewModalProjectInfo"></div>
@@ -39,7 +39,7 @@
             </div>
 
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Back</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Back</button>
             </div>
         </div>
     </div>

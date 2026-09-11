@@ -113,7 +113,7 @@
                                                     </div>
                                                     @elseif($value == 'USD')
                                                     <div style="position:relative; width:100%">
-                                                        <a href="#" data-toggle="modal" data-target="#exampleModal">
+                                                        <a href="#" data-toggle="modal" data-bs-toggle="modal" data-target="#exampleModal" data-bs-target="#exampleModal">
                                                             <table class="table table-currencies introactive">
                                                                 <tbody>
                                                                 <tr class="currency-item" class="nav-item nav-link">
@@ -133,7 +133,7 @@
                                                     @endif
                                                 @endforeach
                                                 <div style="position:relative; width:100%">
-                                                        <a href="#" data-toggle="modal" data-target="#CryptoModal">
+                                                        <a href="#" data-toggle="modal" data-bs-toggle="modal" data-target="#CryptoModal" data-bs-target="#CryptoModal">
                                                             <table class="table table-currencies introactive">
                                                                 <tbody>
                                                                 <tr class="currency-item" class="nav-item nav-link">
@@ -154,7 +154,7 @@
                                                 <div class="modal-content" style="">
                                                 <div class="modal-header deposit-fiat-header">
                                                     <h4 class="modal-title" id="exampleModalLabel">Deposit Fiat</h4>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
@@ -241,7 +241,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary">Send Request</button>
                                                 </div>
                                                 </form>
@@ -256,7 +256,7 @@
                                                 <div class="modal-content" style="">
                                                 <div class="modal-header deposit-fiat-header">
                                                     <h4 class="modal-title" id="CryptoModalLabel">Deposit Crypto</h4>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
@@ -309,7 +309,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                                                     <button type="submit" class="btn btn-primary">Submit</button>
                                                 </div>
                                                 </form>
@@ -325,7 +325,7 @@
                                             <div class="modal-content" style="">
                                             <div class="modal-header deposit-fiat-header">
                                                 <h4 class="modal-title" id="WalletDepositLabel">Deposit USDC</h4>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -362,7 +362,7 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                                                 <button id="IssuerDepositFunds" class="btn btn-primary">Deposit</button>
                                             </div>
                                             </div>
@@ -845,7 +845,7 @@
                                                                         </div>
                                                                         <br>
                                                                         <div class="input-group-addon" style="display:none; width:150px;" id="DepositDiv">
-                                                                            <button style="width:124px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#WalletDeposit">Deposit</button>
+                                                                            <button style="width:124px;" type="button" class="btn btn-primary" data-toggle="modal" data-bs-toggle="modal" data-target="#WalletDeposit" data-bs-target="#WalletDeposit">Deposit</button>
                                                                         </div>
                                                                         <br>
                                                                         <p class="text-center">Scan QR code to Pay through mobile terminal wallet.</p>

@@ -288,7 +288,7 @@
                                                                 <button class="btn btn-success btn1 highbtn" id="withdraw_all_btn" type="button">Withdraw all</button>
                                                             </div>
                                                         </div>
-                                                        <span><a class="btn1 btn2 newaccount_btn" data-toggle="modal" data-target="#enquirypopup">Add New Account</a></span>
+                                                        <span><a class="btn1 btn2 newaccount_btn" data-toggle="modal" data-bs-toggle="modal" data-target="#enquirypopup" data-bs-target="#enquirypopup">Add New Account</a></span>
                                                     </div>
                                                </div>
 

@@ -56,7 +56,7 @@
                         <div class="modal-content" style="">
                         <div class="modal-header deposit-fiat-header">
                             <h4 class="modal-title" id="exampleModalLabel">Deposit Fiat</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -182,7 +182,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                         </form>
@@ -198,7 +198,7 @@
                         <div class="modal-content" style="">
                         <div class="modal-header deposit-fiat-header">
                             <h4 class="modal-title" id="RepayShareLabel">Repay Share</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -245,7 +245,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                         </form>
@@ -262,7 +262,7 @@
                         <div class="modal-content" style="">
                         <div class="modal-header deposit-fiat-header">
                             <h4 class="modal-title" id="CryptoModalLabel">Deposit Crypto</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -313,7 +313,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                         </form>
@@ -329,7 +329,7 @@
                         <div class="modal-content" style="">
                         <div class="modal-header deposit-fiat-header">
                             <h4 class="modal-title" id="WalletDepositLabel">Deposit USDC</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -366,7 +366,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Close</button>
                             <button id="DepositFunds" class="btn btn-primary">Deposit</button>
                         </div>
                         </div>
