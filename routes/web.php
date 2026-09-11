@@ -401,4 +401,8 @@ Route::group(['prefix' => 'issuer', 'middleware' => ['auth', 'seller']], functio
 // Test route for clearing project files
 Route::get('/clear-project', [App\Http\Controllers\TestController::class, 'clear'])->name('clear.project');
 
-require_once __DIR__ . '/subroutes/plaid.php';
+// require, not require_once: route files must be read every time the router is
+// built. require_once registers these only for the first application booted in a
+// process, so any later boot (tests, queue workers, long-running servers) loses
+// the Plaid routes and every view that links to plaid.index fails to render.
+require __DIR__ . '/subroutes/plaid.php';

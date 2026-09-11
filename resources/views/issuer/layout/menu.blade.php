@@ -65,78 +65,138 @@
 
 <div class="menu-inner-shadow"></div>
 
+@php
+    // One place decides which menu entry the current page belongs to.
+    //
+    // Each parent is active when any of its children is, so a parent and its
+    // toggle can no longer disagree. Sub-pages (edit, detail, create, view) are
+    // listed with the entry they belong to, and patterns are exact wherever a
+    // wildcard would swallow a sibling: `issuer/token*` used to match
+    // tokenRequest, tokenList and the token edit page as well as Create
+    // Property token, so two entries lit up at once.
+    $demo = !empty($isDemo);
+    $on = function (array $patterns) { return request()->is(...$patterns); };
+
+    $menu = [
+        'dashboard'       => $on(['issuer/dashboard']),
+        'deposit'         => $on(['issuer/wallet']),
+        'withdraw'        => $on(['issuer/withdrawETH']),
+        'assetToken'      => $on(['issuer/asset_fund']),
+        'propertyToken'   => $on(['issuer/token', 'issuer/token-demo']),
+        'utilityToken'    => $on(['issuer/utility-token']),
+        'pendingAssets'   => $on(['issuer/tokenRequest']),
+        'assetsList'      => $on(['issuer/property', 'issuer/propertydetails/*', 'issuer/token/*',
+                                  'issuer/tokenList', 'issuer/token-users', 'issuer/token_history/*']),
+        'purchaseRequest' => $on(['issuer/purchase_request']),
+        'keystore'        => $on(['issuer/keystore', 'issuer/keystore/*']),
+        'banks'           => $on(['issuer/payments/settings', 'issuer/payments/settings/addBank',
+                                  'issuer/payments/settings/editBank/*', 'issuer/payments/settings/update/*',
+                                  'issuer/payments/settings/view/*']),
+        'crypto'          => $on(['issuer/payments/settings/crypto']),
+        'pendingPayments' => $on(['issuer/propertyBuyRequest']),
+        'paymentHistory'  => $on(['issuer/buy_requests']),
+        'plaid'           => $on(['issuer/plaid*']),
+        'capital'         => $on(['issuer/report/capital']),
+        'sales'           => $on(['issuer/report/sales']),
+        'investors'       => $on(['issuer/report/investors']),
+    ];
+
+    $group = [
+        'wallet'   => $menu['deposit'] || $menu['withdraw'],
+        // Pending Assets is hidden from the menu, but its page is still reachable
+        // by URL, so it keeps the Create Asset group open.
+        'create'   => $menu['assetToken'] || $menu['propertyToken'] || $menu['utilityToken'] || $menu['pendingAssets'],
+        'deployed' => $menu['assetsList'] || $menu['purchaseRequest'],
+        'payments' => $menu['banks'] || $menu['crypto'] || $menu['pendingPayments'] || $menu['paymentHistory'] || $menu['plaid'],
+        'reports'  => $menu['capital'] || $menu['sales'] || $menu['investors'],
+    ];
+
+    $state    = function ($isActive) { return $isActive ? 'active' : ''; };
+    $groupFor = function ($isActive) { return $isActive ? 'active open' : ''; };
+    $disabled = $demo ? 'disabled' : '';
+    $href     = function ($url) use ($demo) { return $demo ? 'javascript:void(0);' : $url; };
+@endphp
+
 <ul class="menu-inner py-1">
-    <li class="menu-item {{ request()->is('issuer/dashboard') ? 'active' : '' }}">
+    <li class="menu-item {{ $state($menu['dashboard']) }}">
         <a href="{{ url('issuer/dashboard') }}" class="menu-link">
             <i class="menu-icon icon-base bx bx-home-smile"></i>
             <div data-i18n="Dashboard">Dashboard</div>
         </a>
     </li>
-    <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && (request()->is('issuer/wallet*') || request()->is('issuer/withdrawETH')) ? 'active open' : '' }}">
-        <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : 'javascript:void(0);' }}" class="menu-link {{ !isset($isDemo) || !$isDemo ? 'menu-toggle' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/wallet*') || request()->is('issuer/withdrawETH') ? 'menu-open' : '') : '' }}">
+    <li class="menu-item {{ $disabled }} {{ $groupFor($group['wallet']) }}">
+        <a href="javascript:void(0);" class="menu-link {{ $demo ? '' : 'menu-toggle' }}">
             <i class="menu-icon icon-base bx bx-wallet"></i>
             <div data-i18n="Wallet">Wallet</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && request()->is('issuer/wallet') ? 'active' : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/wallet') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['deposit']) }}">
+                <a href="{{ $href(url('issuer/wallet')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-down-arrow-circle"></i>
                     <div data-i18n="Deposit">Deposit</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/withdrawETH') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/withdrawETH') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['withdraw']) }}">
+                <a href="{{ $href(url('issuer/withdrawETH')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-up-arrow-circle"></i>
                     <div data-i18n="Withdraw">Withdraw</div>
                 </a>
             </li>
         </ul>
     </li>
-    <li class="menu-item {{ $isDemo || request()->is('issuer/asset*') || request()->is('issuer/token*') || request()->is('issuer/utility-token') || request()->is('issuer/tokenRequest') ? 'active open' : '' }}">
-        <a href="javascript:void(0);" class="menu-link menu-toggle create-asset-highlight {{ request()->is('issuer/asset*') || request()->is('issuer/token*') || request()->is('issuer/utility-token') || request()->is('issuer/tokenRequest') ? 'menu-open' : '' }}">
+    {{-- In demo mode the group stays open so the Create Property token entry is visible. --}}
+    <li class="menu-item {{ $groupFor($demo || $group['create']) }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle create-asset-highlight">
             <i class="menu-icon icon-base bx bx-plus-circle"></i>
             <div data-i18n="Create Asset">Create Asset</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/asset_fund') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/asset_fund') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['assetToken']) }}">
+                <a href="{{ $href(url('issuer/asset_fund')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-coin-stack"></i>
                     <div data-i18n="Create Asset token">Create Asset token</div>
                 </a>
             </li>
-            <li class="menu-item {{ request()->is('issuer/token*') ? 'active' : '' }}">
-                <a href="{{ config('app.is_demo') ? url('issuer/token-demo') : url('issuer/token') }}" class="menu-link create-property-token-highlight">
+            <li class="menu-item {{ $state($menu['propertyToken']) }}">
+                <a href="{{ $demo ? url('issuer/token-demo') : url('issuer/token') }}" class="menu-link create-property-token-highlight">
                     <i class="menu-icon icon-base bx bx-building-house"></i>
                     <div data-i18n="Create Property token">Create Property token</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/utility-token') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/utility-token') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['utilityToken']) }}">
+                <a href="{{ $href(url('issuer/utility-token')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-cog"></i>
                     <div data-i18n="Create Utility token">Create Utility token</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/tokenRequest') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/tokenRequest') }}" class="menu-link">
+            {{--
+                Pending Assets is hidden: tokens deploy directly on creation and are
+                no longer queued for admin review. The page is still reachable at
+                /issuer/tokenRequest and lists only deployments that did not finish.
+                Restore this entry if issuers need a way back to it from the menu.
+
+            <li class="menu-item {{ $disabled }} {{ $state($menu['pendingAssets']) }}">
+                <a href="{{ $href(url('issuer/tokenRequest')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-time"></i>
                     <div data-i18n="Pending Assets">Pending Assets</div>
                 </a>
             </li>
+            --}}
         </ul>
     </li>
-    <li class="menu-item {{ request()->is('issuer/property') || request()->is('issuer/purchase_request') ? 'active open' : '' }}">
-        <a href="javascript:void(0);" class="menu-link menu-toggle {{ request()->is('issuer/property*') || request()->is('issuer/purchase_request') ? 'menu-open' : '' }}">
+    <li class="menu-item {{ $groupFor($group['deployed']) }}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon icon-base bx bx-building"></i>
             <div data-i18n="Deployed Assets">Deployed Assets</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ request()->is('issuer/property') ? 'active' : '' }}">
+            <li class="menu-item {{ $state($menu['assetsList']) }}">
                 <a href="{{ url('issuer/property') }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-list-ul"></i>
                     <div data-i18n="Assets List">Assets List</div>
                 </a>
             </li>
-            <li class="menu-item {{ request()->is('issuer/purchase_request') ? 'active' : '' }}">
+            <li class="menu-item {{ $state($menu['purchaseRequest']) }}">
                 <a href="{{ url('/issuer/purchase_request') }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-shopping-bag"></i>
                     <div data-i18n="Property Purchase Request">Property Purchase Request</div>
@@ -144,45 +204,45 @@
             </li>
         </ul>
     </li>
-    <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && request()->is('issuer/keystore') ? 'active' : '' }}">
-        <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('issuer/keystore') }}" class="menu-link">
+    <li class="menu-item {{ $disabled }} {{ $state($menu['keystore']) }}">
+        <a href="{{ $href(url('issuer/keystore')) }}" class="menu-link">
             <i class="menu-icon icon-base bx bx-key"></i>
             <div data-i18n="Manage Keystore">Manage Keystore</div>
         </a>
     </li>
-    <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && (request()->is('issuer/payments*') || request()->is('issuer/propertyBuyRequest') || request()->is('issuer/buy_requests') || request()->is('issuer/plaid*')) ? 'active open' : '' }}">
-        <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : 'javascript:void(0);' }}" class="menu-link {{ !isset($isDemo) || !$isDemo ? 'menu-toggle' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/payments*') ? 'menu-open' : '') : '' }}">
+    <li class="menu-item {{ $disabled }} {{ $groupFor($group['payments']) }}">
+        <a href="javascript:void(0);" class="menu-link {{ $demo ? '' : 'menu-toggle' }}">
             <i class="menu-icon icon-base bx bx-credit-card"></i>
             <div data-i18n="Payments">Payments</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/payments/settings') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('payments') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['banks']) }}">
+                <a href="{{ $href(route('payments')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-bank"></i>
                     <div data-i18n="Add Banks">Add Banks</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && request()->is('issuer/payments/settings/crypto') ? 'active' : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('crypto.payments') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['crypto']) }}">
+                <a href="{{ $href(route('crypto.payments')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-bitcoin"></i>
                     <div data-i18n="Manage Crypto Address">Manage Crypto Address</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo && request()->is('issuer/propertyBuyRequest') ? 'active' : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('/issuer/propertyBuyRequest') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['pendingPayments']) }}">
+                <a href="{{ $href(url('/issuer/propertyBuyRequest')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-time"></i>
                     <div data-i18n="Pending Payments">Pending Payments</div>
                 </a>
             </li>
-            <li class="menu-item {{ $isDemo ? 'disabled' : '' }} {{ !$isDemo && request()->is('issuer/buy_requests') ? 'active' : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : url('/issuer/buy_requests') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['paymentHistory']) }}">
+                <a href="{{ $href(url('/issuer/buy_requests')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-history"></i>
                     <div data-i18n="Payment History">Payment History</div>
                 </a>
             </li>
             @if($pageVisibility->get('plaid')['value'])
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/plaid*') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('plaid.index') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['plaid']) }}">
+                <a href="{{ $href(route('plaid.index')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-link"></i>
                     <div data-i18n="Connect Your Bank">Connect Your Bank</div>
                 </a>
@@ -190,26 +250,26 @@
             @endif
         </ul>
     </li>
-    <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ (!$isDemo && (request()->is('issuer/report/capital') || request()->is('issuer/report/sales') || request()->is('issuer/report/investors')) ? 'active open' : '') }}">
-        <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : 'javascript:void(0);' }}" class="menu-link {{ !isset($isDemo) || !$isDemo ? 'menu-toggle' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/report*') ? 'menu-open' : '') : '' }}">
+    <li class="menu-item {{ $disabled }} {{ $groupFor($group['reports']) }}">
+        <a href="javascript:void(0);" class="menu-link {{ $demo ? '' : 'menu-toggle' }}">
             <i class="menu-icon icon-base bx bx-bar-chart-alt-2"></i>
             <div data-i18n="Reports">Reports</div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !$isDemo ? (request()->is('issuer/report/capital') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('report.capital') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['capital']) }}">
+                <a href="{{ $href(route('report.capital')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-dollar-circle"></i>
                     <div data-i18n="Capital">Capital</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/report/sales') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('report.sales') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['sales']) }}">
+                <a href="{{ $href(route('report.sales')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-trending-up"></i>
                     <div data-i18n="Sales">Sales</div>
                 </a>
             </li>
-            <li class="menu-item {{ isset($isDemo) && $isDemo ? 'disabled' : '' }} {{ !isset($isDemo) || !$isDemo ? (request()->is('issuer/report/investors') ? 'active' : '') : '' }}">
-                <a href="{{ isset($isDemo) && $isDemo ? 'javascript:void(0);' : route('report.investors') }}" class="menu-link">
+            <li class="menu-item {{ $disabled }} {{ $state($menu['investors']) }}">
+                <a href="{{ $href(route('report.investors')) }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-group"></i>
                     <div data-i18n="Investors">Investors</div>
                 </a>
