@@ -119,6 +119,69 @@ class IssuerMenuTest extends ScenarioTestCase
         return ['live' => [false], 'demo' => [true]];
     }
 
+    /**
+     * The navbar's Profile and Security links pointed at /profile and /security,
+     * the investor pages. Their investor middleware sends anyone else to
+     * issuer/token-demo, so both links bounced issuers to the demo token page.
+     *
+     * @test
+     */
+    public function no_issuer_panel_link_leads_to_an_investor_only_page()
+    {
+        $issuer = $this->makeIssuer();
+        $html   = $this->actingAs($issuer)->get('/issuer/dashboard')->getContent();
+        $xpath  = $this->xpath($html);
+
+        $offenders = [];
+        $query = "//aside[@id='layout-menu']//a[@href] | //nav[contains(@class,'layout-navbar')]//a[@href]";
+
+        foreach ($xpath->query($query) as $link) {
+            $path = parse_url($link->getAttribute('href'), PHP_URL_PATH);
+            if (!$path || strpos($link->getAttribute('href'), 'javascript:') === 0) {
+                continue;
+            }
+
+            try {
+                $route = app('router')->getRoutes()->match(Request::create($path, 'GET'));
+            } catch (\Throwable $e) {
+                continue; // not a GET page (e.g. logout)
+            }
+
+            if (in_array('investor', $route->gatherMiddleware(), true)) {
+                $offenders[] = trim(preg_replace('/\s+/', ' ', $link->textContent)) . ' -> ' . $path;
+            }
+        }
+
+        $this->assertSame([], $offenders, 'Issuer panel links that send issuers to investor-only pages.');
+    }
+
+    /**
+     * @test
+     * @dataProvider accountPages
+     */
+    public function an_issuer_can_open_their_account_pages_from_the_navbar(string $label, string $expectedPath)
+    {
+        $issuer = $this->makeIssuer();
+        $xpath  = $this->xpath($this->actingAs($issuer)->get('/issuer/dashboard')->getContent());
+
+        $link = $xpath->query("//a[contains(@class,'dropdown-item')][span[normalize-space(.)='{$label}']]")->item(0);
+        $this->assertNotNull($link, "No {$label} link in the issuer navbar.");
+
+        $path = parse_url($link->getAttribute('href'), PHP_URL_PATH);
+        $this->assertSame($expectedPath, $path);
+
+        $response = $this->actingAs($issuer)->get($path);
+        $this->assertSame(200, $response->getStatusCode(), "{$label} redirected to " . $response->headers->get('Location'));
+    }
+
+    public function accountPages(): array
+    {
+        return [
+            'profile'  => ['Profile', '/issuer/profile'],
+            'security' => ['Security', '/issuer/security'],
+        ];
+    }
+
     /** @test */
     public function the_highlight_is_the_same_in_a_full_page_render()
     {

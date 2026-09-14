@@ -98,12 +98,14 @@
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ url('/profile') }}">
+            {{-- Issuer pages. /profile and /security are the investor versions, guarded by
+                 the investor middleware, which sent issuers to issuer/token-demo. --}}
+            <a class="dropdown-item" href="{{ url('/issuer/profile') }}">
               <i class="icon-base bx bx-user icon-md me-3"></i><span>Profile</span>
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ url('/security') }}">
+            <a class="dropdown-item" href="{{ url('/issuer/security') }}">
               <i class="icon-base bx bx-cog icon-md me-3"></i><span>Security</span>
             </a>
           </li>
