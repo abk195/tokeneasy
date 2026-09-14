@@ -526,6 +526,8 @@ class HomeController extends Controller
             'back_image.mimes'=>'Png,Jpg,Jpeg Formats only will be Accepted For Back Side Image..'
         ]);
         $image = $request->image;
+        // Was never assigned, so every KYC edit failed with a server error.
+        $back_image = $request->back_image;
         AccreditedKycDocument::where(['id' => $id, 'user_id' => $user->id])->update([
             'user_id' => $user->id,
             'url' => $image->store('accredited_kyc/documents'),
@@ -1100,7 +1102,7 @@ class HomeController extends Controller
 
     public function profile_identity(ProfileIdentity $request)
     {
-        Session::put('check_url', $_SERVER['REQUEST_URI']);
+        Session::put('check_url', $request->getRequestUri());
         try {
             $user = Auth::user();
             $name = $request->first_name.' '.$request->last_name;
@@ -1239,7 +1241,7 @@ class HomeController extends Controller
 
     public function profile_finance(ProfileFinance $request)
     {
-        Session::put('check_url', $_SERVER['REQUEST_URI']);
+        Session::put('check_url', $request->getRequestUri());
 
         try {
             $user = Auth::user();
@@ -1262,7 +1264,7 @@ class HomeController extends Controller
 
     public function profile_background(Request $request)
     {
-        Session::put('check_url', $_SERVER['REQUEST_URI']);
+        Session::put('check_url', $request->getRequestUri());
         $this->validate($request, [
             'investment_experience'           => 'required|max:10',
             'investment_size'                 => 'required|numeric|min:1',

@@ -270,7 +270,10 @@
                                                             *</span></label>
                                                     <select class="form-control city" placeholder="City"
                                                         name="city_id">
-                                                        @foreach (cities() as $city)
+                                                        {{-- Cities for the saved country. cities() with no argument lists
+                                                             Afghanistan's, and the script below only reloads the list when
+                                                             the country changes, so a saved city elsewhere never showed. --}}
+                                                        @foreach (cities(@$user->identity->country_code ?: 'AF') as $city)
                                                             <option value="{{ $city->id }}"
                                                                 @if (@$user->identity->city_id == $city->id) selected @endif>
                                                                 {{ $city->name }}</option>
