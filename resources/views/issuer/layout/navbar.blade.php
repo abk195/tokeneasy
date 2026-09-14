@@ -98,14 +98,21 @@
             <div class="dropdown-divider my-1"></div>
           </li>
           <li>
-            {{-- Issuer pages. /profile and /security are the investor versions, guarded by
-                 the investor middleware, which sent issuers to issuer/token-demo. --}}
-            <a class="dropdown-item" href="{{ url('/issuer/profile') }}">
+            {{-- This navbar is shared by the issuer and investor layouts, and each has its
+                 own account pages behind role middleware: /issuer/* sends non-issuers to
+                 /dashboard, and /profile and /security send non-investors to
+                 issuer/token-demo. So the links follow whoever is signed in. --}}
+            @php
+              $accountBase = (auth()->check() && (int) auth()->user()->user_type === \App\User::USER_TYPE_ISSUER)
+                  ? '/issuer'
+                  : '';
+            @endphp
+            <a class="dropdown-item" href="{{ url($accountBase . '/profile') }}">
               <i class="icon-base bx bx-user icon-md me-3"></i><span>Profile</span>
             </a>
           </li>
           <li>
-            <a class="dropdown-item" href="{{ url('/issuer/security') }}">
+            <a class="dropdown-item" href="{{ url($accountBase . '/security') }}">
               <i class="icon-base bx bx-cog icon-md me-3"></i><span>Security</span>
             </a>
           </li>

@@ -67,7 +67,10 @@
 
   <ul class="menu-inner py-1">
       <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
-          <a href="{{ $isDemo ? 'javascript:void(0);' : route('dashboard') }}" class="menu-link {{ $isDemo ? 'menu-disabled' : '' }}">
+          {{-- url(), not route('dashboard'): the issuer panel registers a route with the same
+               name later, so route('dashboard') built /issuer/dashboard and investors only
+               arrived here after that page's seller middleware bounced them back. --}}
+          <a href="{{ $isDemo ? 'javascript:void(0);' : url('dashboard') }}" class="menu-link {{ $isDemo ? 'menu-disabled' : '' }}">
               <i class="menu-icon icon-base bx bx-home-smile"></i>
               <div data-i18n="Dashboard">Dashboard</div>
           </a>
