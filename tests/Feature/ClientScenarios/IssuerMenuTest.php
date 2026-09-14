@@ -85,6 +85,40 @@ class IssuerMenuTest extends ScenarioTestCase
         );
     }
 
+    /**
+     * Create Property token used to carry a gradient call-to-action class left
+     * over from demo mode, where it was the only create option enabled. All
+     * three create options are now styled alike.
+     *
+     * @test
+     * @dataProvider demoModes
+     */
+    public function the_three_create_options_are_styled_alike(bool $demo)
+    {
+        view()->share('isDemo', $demo);
+        $this->app->instance('request', Request::create('/issuer/dashboard'));
+
+        $xpath   = $this->xpath(view('issuer.layout.menu')->render());
+        $classes = [];
+
+        foreach (['Create Asset token', 'Create Property token', 'Create Utility token'] as $label) {
+            $link = $xpath->query("//aside[@id='layout-menu']//a[div[normalize-space(.)='{$label}']]")->item(0);
+            $this->assertNotNull($link, "{$label} is missing from the menu.");
+            $classes[$label] = trim(preg_replace('/\s+/', ' ', $link->getAttribute('class')));
+        }
+
+        $this->assertSame(
+            ['menu-link'],
+            array_values(array_unique($classes)),
+            'The create options are not styled alike: ' . json_encode($classes)
+        );
+    }
+
+    public function demoModes(): array
+    {
+        return ['live' => [false], 'demo' => [true]];
+    }
+
     /** @test */
     public function the_highlight_is_the_same_in_a_full_page_render()
     {

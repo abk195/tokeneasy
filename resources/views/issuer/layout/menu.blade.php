@@ -158,7 +158,7 @@
                 </a>
             </li>
             <li class="menu-item {{ $state($menu['propertyToken']) }}">
-                <a href="{{ $demo ? url('issuer/token-demo') : url('issuer/token') }}" class="menu-link create-property-token-highlight">
+                <a href="{{ $demo ? url('issuer/token-demo') : url('issuer/token') }}" class="menu-link">
                     <i class="menu-icon icon-base bx bx-building-house"></i>
                     <div data-i18n="Create Property token">Create Property token</div>
                 </a>
