@@ -215,7 +215,7 @@ class Bug01DirectDeployRouteTest extends ScenarioTestCase
             'expectedIrr'            => 8,
             'fundedMembers'          => 0,
             'keystore_id'            => $keystore->id,
-            'enable_internal_wallet' => 1,
+            'enable_internal_wallet' => 0,   // the form now always submits 0
         ], $overrides);
     }
 }
