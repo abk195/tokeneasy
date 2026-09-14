@@ -5,7 +5,7 @@
 <div class="sub-nav">
 		<nav class="container">
   <div class="nav nav-tabs cus-nav-fxd" id="nav-tab" role="tablist">
-    <a class="nav-item nav-link active" id="nav-overview-tab" data-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-overview" aria-selected="true">Support</a>   
+    <a class="nav-item nav-link active" id="nav-overview-tab" data-toggle="tab" data-bs-toggle="tab" href="#nav-overview" role="tab" aria-controls="nav-overview" aria-selected="true">Support</a>   
   </div>
 </nav>
 </div>

@@ -43,7 +43,7 @@
                                 <!-- Left Side Widget -->
                                 <table class="table table-currencies introactive">
                                     <tbody>
-                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab">
+                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab" data-bs-toggle="tab">
 
                                             <td class="currency-balance-col">
                                                 <p class="currency-balance"><span class="currency-sign"></span>Step 1:- Choose a payment option like {{env('BASE_COIN')}} to buy your {{Setting::get('token_symbol','GMC')}} Token.</p>
@@ -56,7 +56,7 @@
 
                                 <table class="table table-currencies introactive">
                                     <tbody>
-                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab">
+                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab" data-bs-toggle="tab">
 
                                             <td class="currency-balance-col">
                                                 <p class="currency-balance"><span class="currency-sign"></span>Step 2:- Specify your value of {{Setting::get('token_symbol','GMC')}} to buy through selected payment type.</p>
@@ -69,7 +69,7 @@
 
                                 <table class="table table-currencies introactive">
                                     <tbody>
-                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab">
+                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab" data-bs-toggle="tab">
 
                                             <td class="currency-balance-col">
                                                 <p class="currency-balance"><span class="currency-sign"></span>Step 3:- Scan the QR-code or copy the address given below to buy {{Setting::get('token_symbol','GMC')}} through selected cryptocurrency.  </p>
@@ -82,7 +82,7 @@
 
                                 <table class="table table-currencies introactive">
                                     <tbody>
-                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab">
+                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab" data-bs-toggle="tab">
 
                                             <td class="currency-balance-col">
                                                 <p class="currency-balance"><span class="currency-sign"></span>Step 4:- Please note that the address of {{env('BASE_COIN')}} is unique and it can be used only for one transaction.</p>
@@ -102,7 +102,7 @@
 
                             <div class="details-container tab-content">
                                 <!-- ETH WITHDRAWAL Tab -->
-                                <div class="tab-pane active" id="btc_deposit">
+                                <div class="tab-pane active show" id="btc_deposit">
 
                                     <h2 class="panel-title">BUY {{Setting::get('token_name','GMC')}}</h2>
                                     <!-- withdraw instruction -->

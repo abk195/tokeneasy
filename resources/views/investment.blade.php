@@ -99,7 +99,7 @@ id="bootstrap-stylesheet" /> --}}
                         <div class="section">
                             <div class="tab-content">
 
-                                <div role="tabpanel" class="tab-pane active" id="my_earnings">
+                                <div role="tabpanel" class="tab-pane active show" id="my_earnings">
                                     <!--Table -->
                                     <section class="container table-property">
                                         <table class="datatable-full table table-striped table-bordered custom-table-style" cellspacing="0" width="100%">

@@ -345,7 +345,7 @@
 
                                     <!-- BTC Deposit Tab -->
                                     @if ($user->g2f_status == 0)
-                                        <div class="tab-pane active" id="btc_deposit">
+                                        <div class="tab-pane active show" id="btc_deposit">
 
                                             <h2 class="panel-title">Two factor Authentication</h2>
 
@@ -431,7 +431,7 @@
                                             <br>
                                         </div>
                                     @else
-                                        <div class="tab-pane active" id="btc_deposit">
+                                        <div class="tab-pane active show" id="btc_deposit">
 
                                             <h2 class="panel-title">Disable factor Authentication</h2>
 

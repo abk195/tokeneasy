@@ -386,7 +386,7 @@
                                                                 <p>
                                                                     This is your internal wallet with your current balance {{number_format(@$user->$value,3)}} {{$value}}. Before any purchase you need to deposit funds in the internal wallet. There are multiple ways funds can be deposited to internal wallet.
                                                                 </p>
-                                                                <div class="tab-pane active wallet-new-container" id="d-flat_deposit">
+                                                                <div class="tab-pane active show wallet-new-container" id="d-flat_deposit">
                                                                     <h2 class="panel-title mb-5">
                                                                         Bank Transfer
                                                                     </h2>

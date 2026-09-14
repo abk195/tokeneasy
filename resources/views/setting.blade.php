@@ -42,8 +42,8 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     {{-- <li class="active"><a href="#communication" role="tab" data-toggle="tab">Communication</a></li> --}}
-                    <li class="active"><a href="#profile" role="tab" data-toggle="tab">Profile</a></li>
-                    <li><a href="#password" role="tab" data-toggle="tab">Password</a></li>
+                    <li class="active"><a href="#profile" role="tab" data-toggle="tab" data-bs-toggle="tab">Profile</a></li>
+                    <li><a href="#password" role="tab" data-toggle="tab" data-bs-toggle="tab">Password</a></li>
                 </ul>
             </div>
         </div>
@@ -116,7 +116,7 @@
                     </div> --}}
                     <!-- Identity Tab Ends -->
                     <!-- Finance Tab Starts -->
-                    <div role="tabpanel" class="tab-pane fade active in" id="profile">
+                    <div role="tabpanel" class="tab-pane fade active show in" id="profile">
                         <div class="row">
                             <div class="col-md-12">
 

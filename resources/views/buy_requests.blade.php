@@ -67,7 +67,7 @@
                             <div class="tab-content">
 
                                 <!-- my Earnings Tab Starts -->
-                                <div role="tabpanel" class="tab-pane active" id="my_earnings">
+                                <div role="tabpanel" class="tab-pane active show" id="my_earnings">
                                     <!--Table -->
                                     <section class="container table-property">
 

@@ -31,7 +31,7 @@
                 <div class="container">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li class="active" style="display: none"><a href="#my_earnings" role="tab" data-toggle="tab"></a></li>
+                        <li class="active" style="display: none"><a href="#my_earnings" role="tab" data-toggle="tab" data-bs-toggle="tab"></a></li>
                     </ul>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                         
                         <!-- Dashboard Tab Ends -->
                         <!-- my Earnings Tab Starts -->
-                        <div role="tabpanel" class="tab-pane active" id="my_earnings">
+                        <div role="tabpanel" class="tab-pane active show" id="my_earnings">
                             <!--Table -->
                             <section class="container table-property">
                             <h5 class="mb-1">Select History Type</h5>

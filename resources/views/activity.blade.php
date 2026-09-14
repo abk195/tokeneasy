@@ -30,12 +30,12 @@
             <div class="container">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li class="active"><a href="#act_updates" role="tab" data-toggle="tab">Updates</a></li>
-                    <li><a href="#act_referrals" role="tab" data-toggle="tab">Referrals</a></li>
-                    <li><a href="#act_offers" role="tab" data-toggle="tab">Offers</a></li>
-                    <li><a href="#act_tasks" role="tab" data-toggle="tab">Tasks</a></li>
-                    <li><a href="#act_faq" role="tab" data-toggle="tab">Help Desk - FAQ</a></li>
-                    <li><a href="#act_contact" role="tab" data-toggle="tab">Help desk - Contact</a></li>
+                    <li class="active"><a href="#act_updates" role="tab" data-toggle="tab" data-bs-toggle="tab">Updates</a></li>
+                    <li><a href="#act_referrals" role="tab" data-toggle="tab" data-bs-toggle="tab">Referrals</a></li>
+                    <li><a href="#act_offers" role="tab" data-toggle="tab" data-bs-toggle="tab">Offers</a></li>
+                    <li><a href="#act_tasks" role="tab" data-toggle="tab" data-bs-toggle="tab">Tasks</a></li>
+                    <li><a href="#act_faq" role="tab" data-toggle="tab" data-bs-toggle="tab">Help Desk - FAQ</a></li>
+                    <li><a href="#act_contact" role="tab" data-toggle="tab" data-bs-toggle="tab">Help desk - Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -44,7 +44,7 @@
             <div class="section">
                 <div class="tab-content">
                     <!-- Updates Tab Starts -->
-                    <div role="tabpanel" class="tab-pane fade active in" id="act_updates">
+                    <div role="tabpanel" class="tab-pane fade active show in" id="act_updates">
                         <section class="container spaceall">
 
                             <!-- Due Collapse Starts -->

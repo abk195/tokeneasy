@@ -122,7 +122,7 @@
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane fade @if ($user->account_type == 'individual') active in @endif" id="identity">
+                    <div role="tabpanel" class="tab-pane fade @if ($user->account_type == 'individual') active show in @endif" id="identity">
                         <div class="row">
                             <div class="col-md-12">
                                 <form role="form" action="{{ route('profile.identity') }}" method="POST"
@@ -326,7 +326,7 @@
                     </div>
 
 
-                    <div role="tabpanel" class="tab-pane fade @if ($user->account_type == 'company') active in @endif" id="company-user">
+                    <div role="tabpanel" class="tab-pane fade @if ($user->account_type == 'company') active show in @endif" id="company-user">
                         <div class="row">
                             <div class="col-md-12">
                                 <form role="form" action="{{ url('/usercompanydetail') }}" method="POST"
@@ -709,7 +709,7 @@
                         </div>
 
                     </div>
-                    <div role="tabpanel" class="tab-pane fade @if (Session::get('check_url') == '/change/password') active in @endif" id="password_tab">
+                    <div role="tabpanel" class="tab-pane fade @if (Session::get('check_url') == '/change/password') active show in @endif" id="password_tab">
                         <form method="POST" action="{{ route('change.password') }}" autocomplete="off">
                             @csrf
                             <div class="row">

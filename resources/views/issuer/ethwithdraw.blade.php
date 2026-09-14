@@ -43,7 +43,7 @@
                                 <!-- Left Side Widget -->
                                 <table class="table table-currencies introactive">
                                     <tbody>
-                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab">
+                                        <tr class="currency-item" class="nav-item nav-link" href="#eth_deposit"   data-toggle="tab" data-bs-toggle="tab">
 
                                             <td class="currency-logo"><img src="{{asset('asset/package/images/wallet/icon-eth.png')}}" alt=""><span class="currency-symbol">MATIC</span></td>
                                             <td class="currency-balance-col">
@@ -67,8 +67,8 @@
                                                 <span class="currency-balance-locked"><i class="fa fa-lock"></i> 0.7</span>
                                             </td>
                                             <td class="currency-actions">
-                                                <p><a class="nav-item nav-link" href="#ltc_deposit" data-toggle="tab">Deposit</a></p>
-                                                <p class="currency-withdraw"><a class="nav-item nav-link" href="#ltc_withdraw" data-toggle="tab">Withdraw</a></p>
+                                                <p><a class="nav-item nav-link" href="#ltc_deposit" data-toggle="tab" data-bs-toggle="tab">Deposit</a></p>
+                                                <p class="currency-withdraw"><a class="nav-item nav-link" href="#ltc_withdraw" data-toggle="tab" data-bs-toggle="tab">Withdraw</a></p>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -86,8 +86,8 @@
                                                 <span class="currency-balance-locked"><i class="fa fa-lock"></i> 0.0175</span>
                                             </td>
                                             <td class="currency-actions">
-                                                <p><a class="nav-item nav-link" href="#bch_deposit" data-toggle="tab">Deposit</a></p>
-                                                <p class="currency-withdraw"><a class="nav-item nav-link" href="#bch_withdraw" data-toggle="tab">Withdraw</a></p>
+                                                <p><a class="nav-item nav-link" href="#bch_deposit" data-toggle="tab" data-bs-toggle="tab">Deposit</a></p>
+                                                <p class="currency-withdraw"><a class="nav-item nav-link" href="#bch_withdraw" data-toggle="tab" data-bs-toggle="tab">Withdraw</a></p>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -338,7 +338,7 @@
                                 <!-- End USD Withdraw Tab -->
 
                                 <!-- ETH WITHDRAWAL Tab -->
-                                <div class="tab-pane active" id="btc_deposit">
+                                <div class="tab-pane active show" id="btc_deposit">
 
                                     <h2 class="panel-title">WITHDRAW MATIC</h2>
                                     <br>

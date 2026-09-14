@@ -73,21 +73,21 @@
                         <div class="card-body">
                             <ul class="nav nav-tabs tabs-bordered nav-justified">
                                 <li class="nav-item">
-                                    <a href="#home-b2" data-toggle="tab" aria-expanded="true" class="nav-link active">
+                                    <a href="#home-b2" data-toggle="tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                                         <span class="d-block d-sm-none"><i
                                                 class="mdi mdi-home-variant-outline font-18"></i></span>
                                         <span class="d-none d-sm-block">Profile Update</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#kyc" data-toggle="tab" aria-expanded="true" class="nav-link">
+                                    <a href="#kyc" data-toggle="tab" data-bs-toggle="tab" aria-expanded="true" class="nav-link">
                                         <span class="d-block d-sm-none"><i
                                                 class="mdi mdi-home-variant-outline font-18"></i></span>
                                         <span class="d-none d-sm-block">KYC</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#profile-b2" data-toggle="tab" aria-expanded="false" class="nav-link">
+                                    <a href="#profile-b2" data-toggle="tab" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                                         <span class="d-block d-sm-none"><i
                                                 class="mdi mdi-account-outline font-18"></i></span>
                                         <span class="d-none d-sm-block">Change Password</span>
@@ -95,7 +95,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="home-b2">
+                                <div class="tab-pane active show" id="home-b2">
                                     <form action="{{ url('issuer/profile_update') }}" method="POST"
                                         class="form-validation" enctype="multipart/form-data">
                                         @csrf

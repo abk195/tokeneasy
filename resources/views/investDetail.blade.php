@@ -150,13 +150,13 @@
             <div class="container">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li class="active"><a href="#in_finances" role="tab" data-toggle="tab">Finances</a></li>
-                    <li><a href="#in_updates" role="tab" data-toggle="tab">Updates (5)</a></li>
-                    <li><a href="#in_voting" role="tab" data-toggle="tab">Voting</a></li>
-                    <li><a href="#in_trades" role="tab" data-toggle="tab">Trades</a></li>
-                    <li><a href="#in_documents" role="tab" data-toggle="tab">Documents</a></li>
-                    <li><a href="#in_reports" role="tab" data-toggle="tab">Reports</a></li>
-                    <li><a href="#in_assetmgmt" role="tab" data-toggle="tab">Asset Mgmt</a></li>
+                    <li class="active"><a href="#in_finances" role="tab" data-toggle="tab" data-bs-toggle="tab">Finances</a></li>
+                    <li><a href="#in_updates" role="tab" data-toggle="tab" data-bs-toggle="tab">Updates (5)</a></li>
+                    <li><a href="#in_voting" role="tab" data-toggle="tab" data-bs-toggle="tab">Voting</a></li>
+                    <li><a href="#in_trades" role="tab" data-toggle="tab" data-bs-toggle="tab">Trades</a></li>
+                    <li><a href="#in_documents" role="tab" data-toggle="tab" data-bs-toggle="tab">Documents</a></li>
+                    <li><a href="#in_reports" role="tab" data-toggle="tab" data-bs-toggle="tab">Reports</a></li>
+                    <li><a href="#in_assetmgmt" role="tab" data-toggle="tab" data-bs-toggle="tab">Asset Mgmt</a></li>
                 </ul>
             </div>
         </div>
@@ -165,7 +165,7 @@
             <div class="section">
                 <div class="tab-content">
                     <!-- Finances Tab Starts -->
-                    <div role="tabpanel" class="tab-pane fade active in" id="in_finances">
+                    <div role="tabpanel" class="tab-pane fade active show in" id="in_finances">
 
                         <section class="container">
                             <!-- Top Details -->
@@ -761,12 +761,12 @@
                                 <!-- tabs -->
                                 <div class="tabbable tabs-left">
                                     <ul class="nav nav-tabs">
-                                        <li class="active"><a href="#voting_1" data-toggle="tab">Start Voting</a></li>
-                                        <li><a href="#vote_poll" data-toggle="tab">List of previous voting results</a></li>
-                                        <li><a href="#respond_vote" data-toggle="tab">Respond to voting</a></li>
+                                        <li class="active"><a href="#voting_1" data-toggle="tab" data-bs-toggle="tab">Start Voting</a></li>
+                                        <li><a href="#vote_poll" data-toggle="tab" data-bs-toggle="tab">List of previous voting results</a></li>
+                                        <li><a href="#respond_vote" data-toggle="tab" data-bs-toggle="tab">Respond to voting</a></li>
                                     </ul>
                                     <div class="tab-content">
-                                        <div class="tab-pane active" id="voting_1">
+                                        <div class="tab-pane active show" id="voting_1">
 
                                             <form role="form">
 

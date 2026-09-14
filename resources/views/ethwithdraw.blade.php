@@ -112,7 +112,7 @@
                                 <div class="col-12">
                                     <div class="details-container tab-content">
                                         <!-- ETH WITHDRAWAL Tab -->
-                                        <div class="tab-pane active" id="withdraw_share">
+                                        <div class="tab-pane active show" id="withdraw_share">
 
                                             <h2 class="panel-title mb-5">Withdraw Share</h2>
                                             <form class="deposit-fiat-form" method="post" action="{{ url('/withdraw_share') }}" enctype="multipart/form-data">
@@ -228,7 +228,7 @@
 
                                     <div class="details-container tab-content">
                                         <!-- ETH WITHDRAWAL Tab -->
-                                        <div class="tab-pane active" id="btc_deposit">
+                                        <div class="tab-pane active show" id="btc_deposit">
 
                                             <h2 class="panel-title">WITHDRAW</h2>
                                             <br>

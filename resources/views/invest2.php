@@ -40,7 +40,7 @@
                                         enctype="multipart/form-data" id="identity-form">
                                         @csrf()
                                         <div class="tab-content">
-                                            <div class="tab-pane active" role="tabpanel" id="step1">
+                                            <div class="tab-pane active show" role="tabpanel" id="step1">
                                                 <input type="hidden" id="token_id" name="token_id"
                                                     value="{{ @$property->userContract->id }}">
                                                 <input type="hidden" id="total_token_value" name="total_token_value">

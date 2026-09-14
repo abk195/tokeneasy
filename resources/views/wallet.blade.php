@@ -386,7 +386,7 @@
                                         </p>
                                         <!-- withdraw instruction -->
                                         @if($coin == 'USD')
-                                        <div class="tab-pane active wallet-new-container" id="eth_deposit">
+                                        <div class="tab-pane active show wallet-new-container" id="eth_deposit">
                                             <section class="withdraw-instruction">
                                                 <h2 class="inner-withdraw-instruction-title">Deposit Fiat through bank transfer</h2>
                                                 <form class="deposit-fiat-form" method="post" action="{{ url('/deposit_fiat') }}" enctype="multipart/form-data">
@@ -496,7 +496,7 @@
                                         @endif
                                     @endforeach
 
-                                    <div class="tab-pane active wallet-new-container" id="eth_deposit">
+                                    <div class="tab-pane active show wallet-new-container" id="eth_deposit">
                                         <h2 class="panel-title mb-5">Manual Deposit</h2>
                                         <p>
                                             You can manually deposit stable coin to admin's provided wallet addresses. Please select the coin from dropdown, deposit to admin address in step 2 and provide proof to admin for verification
@@ -611,7 +611,7 @@
                                     </div>
                                     <!-- End ETH Deposit Tab -->
 
-                                    <div class="tab-pane active wallet-new-container" id="meta_mask">
+                                    <div class="tab-pane active show wallet-new-container" id="meta_mask">
                                         {{-- <h2 class="panel-title mb-5">
                                             Direct Deposit Crypto using your crypto wallet like MetaMask
                                         </h2>

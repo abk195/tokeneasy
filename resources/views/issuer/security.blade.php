@@ -394,7 +394,7 @@ $currentRoute = \Request::getRequestUri() == '/issuer/security' ? true : false;
                                             <!-- End USD Withdraw Tab -->
 
                                             <!-- BTC Deposit Tab -->
-                                            <div class="tab-pane @if (!$currentRoute) active @endif"
+                                            <div class="tab-pane @if (!$currentRoute) active show @endif"
                                                 id="btc_deposit">
 
                                                 <h2 class="panel-title">BTC Deposit</h2>
@@ -618,7 +618,7 @@ $currentRoute = \Request::getRequestUri() == '/issuer/security' ? true : false;
 
                                             <!-- ETH Deposit Tab -->
 
-                                            <div class="tab-pane @if ($currentRoute) active @endif"
+                                            <div class="tab-pane @if ($currentRoute) active show @endif"
                                                 id="eth_deposit">
                                                 @if ($user->g2f_status == 0)
                                                     <h2 class="panel-title">Security</h2>
@@ -704,7 +704,7 @@ $currentRoute = \Request::getRequestUri() == '/issuer/security' ? true : false;
 
                                                     </section>
                                                 @else
-                                                    <div class="tab-pane active" id="btc_deposit">
+                                                    <div class="tab-pane active show" id="btc_deposit">
 
                                                         <h2 class="panel-title">Disable factor Authentication</h2>
 
