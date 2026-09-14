@@ -35,21 +35,8 @@ class ExternalWalletDefaultTest extends ScenarioTestCase
         $response = $this->actingAs($this->issuer)->get($path);
         $response->assertStatus(200);
 
-        $this->assertSame(
-            ['0'],
-            $this->submittedValues($response->getContent()),
-            "{$path} should always submit enable_internal_wallet = 0 and offer no choice."
-        );
-        // Only visible labels count: the page's sample-data script keeps a code
-        // comment mentioning the field.
-        $labels = [];
-        foreach ($this->xpath($response->getContent())->query('//label') as $label) {
-            $labels[] = trim(preg_replace('/\s+/', ' ', $label->textContent));
-        }
-        $this->assertEmpty(
-            preg_grep('/Internal Wallet/i', $labels),
-            "{$path} still shows the internal wallet option."
-        );
+        $this->assertPostsExternalOnly($response->getContent(), $path);
+        $this->assertNoCustodyWording($response->getContent(), $path);
     }
 
     public function createForms(): array
@@ -69,7 +56,8 @@ class ExternalWalletDefaultTest extends ScenarioTestCase
         $response = $this->actingAs($this->issuer)->get('/issuer/token/' . $contract->property_id);
         $response->assertStatus(200);
 
-        $this->assertSame(['0'], $this->submittedValues($response->getContent()));
+        $this->assertPostsExternalOnly($response->getContent(), 'the edit form');
+        $this->assertNoCustodyWording($response->getContent(), 'the edit form');
     }
 
     /**
@@ -122,23 +110,43 @@ class ExternalWalletDefaultTest extends ScenarioTestCase
 
     // ----------------------------------------------------------------- setup
 
-    /** Values of every live (not commented-out) enable_internal_wallet field. */
-    private function submittedValues(string $html): array
+    /**
+     * What the form actually submits for the setting.
+     *
+     * The create-property form posts new FormData(form) and the others call
+     * form.submit(), so only fields inside form#property-create are sent. There
+     * must be exactly one, fixed at 0, with no choice offered.
+     */
+    private function assertPostsExternalOnly(string $html, string $where)
     {
-        $xpath  = $this->xpath($html);
-        $values = [];
+        $xpath = $this->xpath($html);
 
-        foreach ($xpath->query("//input[@name='enable_internal_wallet']") as $input) {
-            $type = strtolower($input->getAttribute('type'));
-            if ($type === 'hidden' || ($type === 'radio' && $input->hasAttribute('checked'))) {
-                $values[] = $input->getAttribute('value');
-            }
-            if ($type === 'radio') {
-                $values[] = 'choice:' . $input->getAttribute('value');
-            }
+        $form = $xpath->query("//form[@id='property-create']")->item(0);
+        $this->assertNotNull($form, "{$where} has no form#property-create.");
+
+        $posted = $xpath->query(".//input[@name='enable_internal_wallet']", $form);
+        $this->assertSame(1, $posted->length, "{$where} should post exactly one enable_internal_wallet field.");
+        $this->assertSame('hidden', $posted->item(0)->getAttribute('type'), "{$where} still offers a choice.");
+        $this->assertSame('0', $posted->item(0)->getAttribute('value'), "{$where} does not post external-only.");
+
+        $this->assertSame(
+            1,
+            $xpath->query("//input[@name='enable_internal_wallet']")->length,
+            "{$where} has an enable_internal_wallet field outside the form."
+        );
+    }
+
+    /** Visible text only: the sample-data script keeps a code comment naming the field. */
+    private function assertNoCustodyWording(string $html, string $where)
+    {
+        $text = '';
+        foreach ($this->xpath($html)->query('//body//text()[not(ancestor::script) and not(ancestor::style)]') as $node) {
+            $text .= ' ' . $node->textContent;
         }
+        $text = preg_replace('/\s+/', ' ', $text);
 
-        return $values;
+        $this->assertNotRegExp('/Wallet Custody/i', $text, "{$where} still shows the Wallet Custody heading.");
+        $this->assertNotRegExp('/internal wallet/i', $text, "{$where} still describes the internal wallet.");
     }
 
     private function xpath(string $html): \DOMXPath

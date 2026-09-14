@@ -729,6 +729,9 @@
                                         </div>
                                     </div>
 
+                                    {{-- The Wallet Custody section is withdrawn: internal custody is no longer
+                                         offered, so every asset is external-wallet only and enable_internal_wallet
+                                         is always submitted as 0. The original section is kept here for reference.
                                     <h5 class="mb-3">Wallet Custody</h5>
                                     <p>
                                         You can enable internal wallet functionality for the issuer. If enabled, investors will have a choice to receive purchased tokens in an internal wallet or an external wallet.
@@ -737,9 +740,6 @@
                                         If the investor opts for an external wallet, they must set up and manage their own crypto (blockchain) wallet.
                                     </p>
                                     <div class="row form-group">
-                                        {{-- Internal custody is withdrawn: every asset is external-wallet only, so the
-                                             issuer is no longer offered the choice and 0 is always submitted. The
-                                             original control is kept here for reference.
                                         <div class="col-md-4 mb-4">
                                             <div class="form-group tooltip-wrapper position-relative">
                                                 <label class="col-form-label">
@@ -755,9 +755,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        --}}
-                                        <input type="hidden" name="enable_internal_wallet" value="0">
                                     </div>
+                                    --}}
+                                    <input type="hidden" name="enable_internal_wallet" value="0">
 
                                     <!-- Step 4 Navigation -->
                                     <div class="navigation-buttons">
